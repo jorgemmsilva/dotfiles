@@ -44,7 +44,7 @@ return {
     opts = {
       filters = {
         dotfiles = false,
-        git_ignored = false,
+        git_ignored = true,
       },
       disable_netrw = true,
       hijack_cursor = true,
@@ -474,8 +474,7 @@ return {
   ------------------------------------------------------------------
   --- MISC
   ------------------------------------------------------------------
-
-  { "https://github.com/Makaze/AnsiEsc", lazy = false },
+  { "powerman/vim-plugin-AnsiEsc", lazy = false },
 
   { "mbbill/undotree", lazy = false },
 
@@ -644,7 +643,7 @@ return {
     ---@module "auto-session"
     ---@type AutoSession.Config
     opts = {
-      suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
+      suppressed_dirs = { "~/Downloads", "/" },
       -- log_level = 'debug',
     },
   },

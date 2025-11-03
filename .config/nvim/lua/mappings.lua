@@ -371,11 +371,19 @@ end, { desc = "Toggle line wrap" })
 
 -- use ESC to close floats
 map("n", "<esc>", function()
+  -- Collect floating windows first to avoid iterator invalidation
+  local floating_wins = {}
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_config(win).relative ~= "" then
-      vim.api.nvim_win_close(win, false)
+      table.insert(floating_wins, win)
     end
   end
+
+  -- Close them with pcall to handle errors gracefully
+  for _, win in ipairs(floating_wins) do
+    pcall(vim.api.nvim_win_close, win, false)
+  end
+
   vim.cmd.nohlsearch() -- also clear search highlight
 end)
 

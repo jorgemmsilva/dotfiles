@@ -19,3 +19,12 @@ end, {})
 
 -- swap the current window with the next one (same as Ctrl+W x)
 vim.cmd "command! Xs wincmd x"
+
+-- colorize ansi text
+vim.api.nvim_create_user_command("StripAnsi", function()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  for i, line in ipairs(lines) do
+    lines[i] = line:gsub("\27%[[%d;]*m", "")
+  end
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+end, {})
