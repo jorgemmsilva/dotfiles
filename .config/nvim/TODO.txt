@@ -1,0 +1,13 @@
+plugins to check out:
+https://github.com/catppuccin/nvim
+https://github.com/bassamsdata/namu.nvim
+https://github.com/ibhagwan/fzf-lua
+https://github.com/kevinhwang91/nvim-bqf
+https://github.com/kkoomen/vim-doge
+
+https://github.com/rest-nvim/rest.nvim
+https://github.com/mistweaverco/kulala.nvim
+https://github.com/tpope/vim-dadbod
+
+
+https://github.com/folke/noice.nvim

@@ -1,0 +1,9 @@
+# ignore everything by default
+*
+
+!.config/kitty/**
+!.config/nvim/**
+!.gitconfig
+!.zshenv
+!.zshrc
+!README.md

@@ -1,0 +1,28 @@
+# Replace the "❯" symbol in the prompt with "➜"
+[character] # The name of the module we are configuring is "character"
+success_symbol = "[➜](bold green)" # The "success_symbol" segment is being set to "➜" with the color "bold green"
+
+[time]
+disabled = false
+format = "🕑 $time($style) "
+#format = '🕙[\[ $time \]]($style) '
+#time_format = "%T"
+#utc_time_offset = "-5"
+#time_range = "10:00:00-14:00:00"
+#time_format = "%I:%M%P ️"
+
+[cmd_duration]
+min_time = 10_000                    # Show command duration over 10,000 milliseconds (=10 sec)
+format = " took [$duration]($style)"
+
+[git_commit]
+format = "[\\($hash$tag\\)]($style) "
+only_detached = false
+
+[golang]
+symbol = "golang "
+format = "| [$symbol($version )]($style)"
+
+[nodejs]
+symbol = "nodejs "
+format = "| [$symbol($version )]($style)"

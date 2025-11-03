@@ -1,0 +1,97 @@
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+plugins=(
+  git
+  colored-man-pages
+  command-not-found
+  docker
+  npm
+  #pip
+  #pyenv
+  #python
+  sudo
+  systemd
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  golang
+  archlinux
+  fzf
+)
+
+source $ZSH/oh-my-zsh.sh
+
+######### misc aliases
+
+# lsd
+alias ls='lsd'
+alias l='ls -la'
+alias la='ls -a'
+alias lla='ls -la'
+alias lt='ls --tree'
+
+#git graph
+alias lg="git log --oneline --decorate --all --graph"
+
+#directory tree
+alias dtree="ls -R | rg ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'"
+alias ftree="tree -h -C"
+
+
+# alias for SimpleHTTPServer
+alias serve="python -m SimpleHTTPServer"
+
+# quick cd to parent
+alias ..="cd .."
+alias ....="cd ../.."
+alias ......="cd ../../.."
+alias ........="cd ../../../.."
+
+# git aliases
+alias gs="git status"
+alias gp="git pull"
+alias gps="git push"
+alias gpsf="git push --force-with-lease"
+alias ga="git add -A"
+alias gam="git commit --am"
+alias gc="git checkout"
+alias gprune="git fetch --prune ; git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs git branch -D"
+alias gcleantags="git tag -l | xargs git tag -d && git fetch -t"
+alias gcleanup="git fetch --prune --prune-tags && git branch -vv | grep 'origin/.*: gone]' | awk '{print $1}' | xargs git branch -D"
+
+
+# FASD alias
+alias v='f -e nvim' # quick opening files with neo vim
+alias nv='nvim'
+alias vim='nvim'
+
+# VScode alias
+alias c='cursor'
+
+# kitty terminal SSH fix
+# alias ssh="kitty +kitten ssh"
+
+# kitty clear screen with ctrl+k
+#scroll-and-clear-screen() {
+#    printf '\n%.0s' {1..$LINES}
+#    zle clear-screen
+#}
+#zle -N scroll-and-clear-screen
+#bindkey '^k' scroll-and-clear-screen
+
+
+# RUST
+alias cargo-features='function _cargo_features() { cargo metadata --format-version=1 | jq --arg pkg "$1" '"'"'.packages[] | select(.name == $pkg) | .features'"'"'; }; _cargo_features'
+
+# setup direnv
+eval "$(direnv hook zsh)"
+
+# setup fasd
+eval "$(fasd --init auto)"
+
+#####################################
+#
+# needs to be at the end
+eval "$(starship init zsh)"
+
+
