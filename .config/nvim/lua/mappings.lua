@@ -325,6 +325,51 @@ local function make_floating_terminal(opts)
   vim.wo[win].number = true
   vim.wo[win].relativenumber = true
 
+  -- Custom gf mapping: open file in background window instead of terminal
+  vim.keymap.set("n", "gf", function()
+    -- Get whole WORD (includes :, /, etc) and strip common prefixes/suffixes
+    local cword = vim.fn.expand("<cWORD>"):gsub("^%s*%-?%-?>?%s*", ""):gsub("[,;\"'`)]$", "")
+    if cword == "" then
+      return
+    end
+
+    -- Parse file:line:col format
+    local file, line, col = cword:match "^(.+):(%d+):(%d+)$"
+    if not file then
+      file, line = cword:match "^(.+):(%d+)$"
+    end
+    file = file or cword
+    line = tonumber(line)
+    col = tonumber(col)
+
+    -- Switch to previously focused window
+    vim.cmd "wincmd p"
+    local target_win = vim.api.nvim_get_current_win()
+
+    -- If we're still in the terminal (no other window), bail out
+    if target_win == win then
+      return
+    end
+
+    -- Hide terminal
+    vim.api.nvim_win_hide(win)
+
+    -- Position cursor after file loads (needed to override autocmds)
+    if line then
+      vim.api.nvim_create_autocmd("BufEnter", {
+        once = true,
+        callback = function()
+          vim.schedule(function()
+            pcall(vim.api.nvim_win_set_cursor, target_win, { line, col and (col - 1) or 0 })
+            vim.cmd "normal! zz"
+          end)
+        end,
+      })
+    end
+
+    vim.cmd("edit " .. vim.fn.fnameescape(file))
+  end, { buffer = buf, desc = "Go to file in background window" })
+
   return { win = win, buf = buf }
 end
 

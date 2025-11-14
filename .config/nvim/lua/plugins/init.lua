@@ -1,10 +1,10 @@
 return {
 
-  {
-    "NvChad/NvChad",
-    lazy = false,
-    branch = "v2.5",
-  },
+  -- {
+  --   "NvChad/NvChad",
+  --   lazy = false,
+  --   branch = "v2.5",
+  -- },
 
   ------------------------------------------------------------------
   --- NVChad
@@ -17,6 +17,7 @@ return {
     end,
   },
 
+  -- currently only needed for the custom LSP renamer and the tabufline and status bar
   {
     "nvchad/ui",
     lazy = false,
@@ -394,12 +395,24 @@ return {
         nerd_font_variant = "mono",
       },
 
+      signature = {
+        enabled = true,
+        window = {
+          border = "single",
+          focusable = false,
+          show_documentation = true,
+        },
+      },
+
       -- (Default) Only show the documentation popup when manually triggered
       completion = {
         documentation = {
           auto_show = true,
           auto_show_delay_ms = 200,
-          window = { border = "single" },
+          window = {
+            border = "single",
+            -- focusable = false,
+          },
         },
         -- menu = require("nvchad.blink").menu,
         menu = {
@@ -682,28 +695,28 @@ return {
 
   {
     "folke/trouble.nvim",
-    optional = true,
-    specs = {
-      "folke/snacks.nvim",
-      opts = function(_, opts)
-        return vim.tbl_deep_extend("force", opts or {}, {
-          picker = {
-            actions = require("trouble.sources.snacks").actions,
-            win = {
-              input = {
-                keys = {
-                  ["<c-t>"] = {
-                    "trouble_open",
-                    mode = { "n", "i" },
-                  },
-                },
-              },
-            },
-          },
-        })
-      end,
-    },
-
+    -- optional = true,
+    -- specs = {
+    --   "folke/snacks.nvim",
+    --   opts = function(_, opts)
+    --     return vim.tbl_deep_extend("force", opts or {}, {
+    --       picker = {
+    --         actions = require("trouble.sources.snacks").actions,
+    --         win = {
+    --           input = {
+    --             keys = {
+    --               ["<c-t>"] = {
+    --                 "trouble_open",
+    --                 mode = { "n", "i" },
+    --               },
+    --             },
+    --           },
+    --         },
+    --       },
+    --     })
+    --   end,
+    -- },
+    --
     opts = {},
     cmd = "Trouble",
     keys = {
