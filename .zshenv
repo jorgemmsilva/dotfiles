@@ -38,3 +38,5 @@ export PATH="$PATH:/Users/jorge/.risc0/bin"
 export MACOSX_DEPLOYMENT_TARGET=$(sw_vers -productVersion)
 export CGO_LDFLAGS=-Wl,-no_warn_duplicate_libraries
 
+# foundry
+export FOUNDRY_DISABLE_NIGHTLY_WARNING=false
