@@ -92,7 +92,7 @@ return {
           if node.type == "file" then
             path = vim.fn.fnamemodify(path, ":h")
           end
-          require("telescope.builtin").live_grep { search_dirs = { path } }
+          require("snacks").picker.grep { cwd = path }
         end, { buffer = bufnr, noremap = true, silent = true, desc = "Live grep in directory" })
       end,
     },
@@ -478,33 +478,6 @@ return {
 
   { "mbbill/undotree", lazy = false },
 
-  {
-    "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    cmd = "Telescope",
-    opts = {
-      defaults = {
-        prompt_prefix = "   ",
-        selection_caret = " ",
-        entry_prefix = " ",
-        sorting_strategy = "ascending",
-        layout_config = {
-          horizontal = {
-            prompt_position = "top",
-            preview_width = 0.55,
-          },
-          width = 0.87,
-          height = 0.80,
-        },
-        mappings = {
-          n = { ["q"] = require("telescope.actions").close },
-        },
-      },
-
-      extensions_list = { "themes", "terms" },
-      extensions = {},
-    },
-  },
 
   {
     "nvim-treesitter/nvim-treesitter",
@@ -619,11 +592,6 @@ return {
   {
     "Bekaboo/dropbar.nvim",
     lazy = false,
-    -- optional, but required for fuzzy finder support
-    dependencies = {
-      "nvim-telescope/telescope-fzf-native.nvim",
-      build = "make",
-    },
     config = function()
       local dropbar_api = require "dropbar.api"
       vim.keymap.set("n", "<Leader>;", dropbar_api.pick, { desc = "Pick symbols in winbar" })

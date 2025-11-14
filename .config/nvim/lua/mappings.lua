@@ -123,51 +123,41 @@ end, { silent = true, desc = "Show code actions" })
 -- vim.cmd.RustLsp('explainError')
 
 --------------------------------------------------------------------------------
---                          Telescope integration
+--                          Picker integration (snacks.nvim)
 --------------------------------------------------------------------------------
 
--- telescope lsp integration
-map("n", "gr", require("telescope.builtin").lsp_references, { noremap = true, desc = "[G]oto [R]eferences" })
-map("n", "gi", require("telescope.builtin").lsp_implementations, { noremap = true, desc = "[G]oto [I]mplementation" })
-map("n", "gd", require("telescope.builtin").lsp_definitions, { noremap = true, desc = "[G]oto [D]efinition" })
-map("n", "go", require("telescope.builtin").lsp_document_symbols, { desc = "Open Document Symbols" })
-map("n", "gW", require("telescope.builtin").lsp_dynamic_workspace_symbols, { desc = "Open Workspace Symbols" })
-map("n", "gt", require("telescope.builtin").lsp_type_definitions, { desc = "[G]oto [T]ype Definition}" })
-map("n", "<leader>cm", "<cmd>Telescope git_commits<CR>", { desc = "telescope git commits" })
+-- snacks picker lsp integration
+map("n", "gr", function() require("snacks").picker.lsp_references() end, { noremap = true, desc = "[G]oto [R]eferences" })
+map("n", "gi", function() require("snacks").picker.lsp_implementations() end, { noremap = true, desc = "[G]oto [I]mplementation" })
+map("n", "gd", function() require("snacks").picker.lsp_definitions() end, { noremap = true, desc = "[G]oto [D]efinition" })
+map("n", "go", function() require("snacks").picker.lsp_symbols() end, { desc = "Open Document Symbols" })
+map("n", "gW", function() require("snacks").picker.lsp_workspace_symbols() end, { desc = "Open Workspace Symbols" })
+map("n", "gt", function() require("snacks").picker.lsp_type_definitions() end, { desc = "[G]oto [T]ype Definition}" })
+map("n", "<leader>cm", function() require("snacks").picker.git_log() end, { desc = "snacks git commits" })
 -- This is not Goto Definition, this is Goto Declaration. (For example, in C this would take you to the header.)
 map("n", "gD", vim.lsp.buf.declaration, { desc = "[G]oto [D]eclaration" })
 
 map("n", "<C-e>", function()
-  require("telescope.builtin").find_files {
-    -- no_ignore = true, -- Include ignored files
-    -- hidden = true, -- Optionally include hidden files
-    find_command = { "rg", "--files", "--iglob", "!.git", "--hidden" },
-  }
-end, { noremap = true, silent = true, desc = "telescope find files" })
+  require("snacks").picker.files({
+    hidden = true,
+  })
+end, { noremap = true, silent = true, desc = "snacks find files" })
 
 map("n", "<C-f>", function()
-  require("telescope.builtin").live_grep {
-    additional_args = function()
-      return { "--hidden" }
-    end,
-  }
-end, { noremap = true, silent = true, desc = "telescope live grep" })
+  require("snacks").picker.grep({
+    hidden = true,
+  })
+end, { noremap = true, silent = true, desc = "snacks live grep" })
 
--- map("n", "<leader>fw", "<cmd>Telescope live_grep<CR>", { desc = "telescope live grep" })
--- map("n", "<leader>fb", "<cmd>Telescope buffers<CR>", { desc = "telescope find buffers" })
--- map("n", "<leader>fh", "<cmd>Telescope help_tags<CR>", { desc = "telescope help page" })
--- map("n", "<leader>ma", "<cmd>Telescope marks<CR>", { desc = "telescope find marks" })
--- map("n", "<leader>fo", "<cmd>Telescope oldfiles<CR>", { desc = "telescope find oldfiles" })
--- map("n", "<leader>fz", "<cmd>Telescope current_buffer_fuzzy_find<CR>", { desc = "telescope find in current buffer" })
--- map("n", "<leader>gt", "<cmd>Telescope git_status<CR>", { desc = "telescope git status" })
--- map("n", "<leader>pt", "<cmd>Telescope terms<CR>", { desc = "telescope pick hidden term" })
--- map("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "telescope find files" })
--- map(
---   "n",
---   "<leader>fa",
---   "<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>",
---   { desc = "telescope find all files" }
--- )
+-- Additional snacks picker commands (commented out for reference):
+-- map("n", "<leader>fw", function() require("snacks").picker.grep() end, { desc = "snacks live grep" })
+-- map("n", "<leader>fb", function() require("snacks").picker.buffers() end, { desc = "snacks find buffers" })
+-- map("n", "<leader>fh", function() require("snacks").picker.help() end, { desc = "snacks help page" })
+-- map("n", "<leader>fo", function() require("snacks").picker.recent() end, { desc = "snacks find recent files" })
+-- map("n", "<leader>fz", function() require("snacks").picker.lines() end, { desc = "snacks find in current buffer" })
+-- map("n", "<leader>gt", function() require("snacks").picker.git_status() end, { desc = "snacks git status" })
+-- map("n", "<leader>ff", function() require("snacks").picker.files() end, { desc = "snacks find files" })
+-- map("n", "<leader>fa", function() require("snacks").picker.files({ hidden = true }) end, { desc = "snacks find all files" })
 
 --------------------------------------------------------------------------------
 --                          GIT
@@ -176,8 +166,8 @@ map("n", "gh", function()
   require("neogit").open() -- { kind = "split" }
 end, { desc = "open neogit" })
 
-map("n", "<leader>gr", require("telescope.builtin").git_branches, { desc = "Git branches" })
-map("n", "<leader>gc", require("telescope.builtin").git_bcommits, { desc = "Git File History" })
+map("n", "<leader>gr", function() require("snacks").picker.git_branches() end, { desc = "Git branches" })
+map("n", "<leader>gc", function() require("snacks").picker.git_log_file() end, { desc = "Git File History" })
 map("n", "<leader>gC", ":DiffviewFileHistory %<CR>", { desc = "Git File History (Diffview)" })
 map("n", "<leader>gg", function()
   require("snacks").gitbrowse()
@@ -361,7 +351,7 @@ map("v", "<leader>/", "gc", { desc = "toggle comment", remap = true })
 -- themes
 map("n", "<leader>th", function()
   require("nvchad.themes").open()
-end, { desc = "telescope nvchad themes" })
+end, { desc = "nvchad themes picker" })
 
 -- toggle line wrap
 map("n", "<leader>z", function()
