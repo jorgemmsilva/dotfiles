@@ -478,7 +478,6 @@ return {
 
   { "mbbill/undotree", lazy = false },
 
-
   {
     "nvim-treesitter/nvim-treesitter",
     event = { "BufReadPost", "BufNewFile" },
@@ -683,6 +682,28 @@ return {
 
   {
     "folke/trouble.nvim",
+    optional = true,
+    specs = {
+      "folke/snacks.nvim",
+      opts = function(_, opts)
+        return vim.tbl_deep_extend("force", opts or {}, {
+          picker = {
+            actions = require("trouble.sources.snacks").actions,
+            win = {
+              input = {
+                keys = {
+                  ["<c-t>"] = {
+                    "trouble_open",
+                    mode = { "n", "i" },
+                  },
+                },
+              },
+            },
+          },
+        })
+      end,
+    },
+
     opts = {},
     cmd = "Trouble",
     keys = {
@@ -817,7 +838,34 @@ return {
       explorer = { enabled = true },
       indent = { enabled = true, animate = { enabled = false } },
       input = { enabled = true },
-      picker = { enabled = true },
+      picker = {
+        enabled = true,
+        previewers = {
+          diff = {
+            -- fancy: Snacks fancy diff (borders, multi-column line numbers, syntax highlighting)
+            -- syntax: Neovim's built-in diff syntax highlighting
+            -- terminal: external command (git's pager for git commands, `cmd` for other diffs)
+            style = "fancy", ---@type "fancy"|"syntax"|"terminal"
+            cmd = { "delta" }, -- example for using `delta` as the external diff command
+            ---@type vim.wo?|{} window options for the fancy diff preview window
+            wo = {
+              breakindent = true,
+              wrap = true,
+              linebreak = true,
+              showbreak = "",
+            },
+          },
+          git = {
+            args = {}, -- additional arguments passed to the git command. Useful to set pager options usin `-c ...`
+          },
+          file = {
+            max_size = 1024 * 1024, -- 1MB
+            max_line_length = 500, -- max line length
+            ft = nil, ---@type string? filetype for highlighting. Use `nil` for auto detect
+          },
+          man_pager = nil, ---@type string? MANPAGER env to use for `man` preview
+        },
+      },
       notifier = { enabled = true },
       quickfile = { enabled = true },
       scope = { enabled = true },

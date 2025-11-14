@@ -127,26 +127,40 @@ end, { silent = true, desc = "Show code actions" })
 --------------------------------------------------------------------------------
 
 -- snacks picker lsp integration
-map("n", "gr", function() require("snacks").picker.lsp_references() end, { noremap = true, desc = "[G]oto [R]eferences" })
-map("n", "gi", function() require("snacks").picker.lsp_implementations() end, { noremap = true, desc = "[G]oto [I]mplementation" })
-map("n", "gd", function() require("snacks").picker.lsp_definitions() end, { noremap = true, desc = "[G]oto [D]efinition" })
-map("n", "go", function() require("snacks").picker.lsp_symbols() end, { desc = "Open Document Symbols" })
-map("n", "gW", function() require("snacks").picker.lsp_workspace_symbols() end, { desc = "Open Workspace Symbols" })
-map("n", "gt", function() require("snacks").picker.lsp_type_definitions() end, { desc = "[G]oto [T]ype Definition}" })
-map("n", "<leader>cm", function() require("snacks").picker.git_log() end, { desc = "snacks git commits" })
+map("n", "gr", function()
+  require("snacks").picker.lsp_references()
+end, { noremap = true, desc = "[G]oto [R]eferences" })
+map("n", "gi", function()
+  require("snacks").picker.lsp_implementations()
+end, { noremap = true, desc = "[G]oto [I]mplementation" })
+map("n", "gd", function()
+  require("snacks").picker.lsp_definitions()
+end, { noremap = true, desc = "[G]oto [D]efinition" })
+map("n", "go", function()
+  require("snacks").picker.lsp_symbols()
+end, { desc = "Open Document Symbols" })
+map("n", "gW", function()
+  require("snacks").picker.lsp_workspace_symbols()
+end, { desc = "Open Workspace Symbols" })
+map("n", "gt", function()
+  require("snacks").picker.lsp_type_definitions()
+end, { desc = "[G]oto [T]ype Definition}" })
+map("n", "<leader>gl", function()
+  require("snacks").picker.git_log()
+end, { desc = "snacks git commits" })
 -- This is not Goto Definition, this is Goto Declaration. (For example, in C this would take you to the header.)
 map("n", "gD", vim.lsp.buf.declaration, { desc = "[G]oto [D]eclaration" })
 
 map("n", "<C-e>", function()
-  require("snacks").picker.files({
+  require("snacks").picker.files {
     hidden = true,
-  })
+  }
 end, { noremap = true, silent = true, desc = "snacks find files" })
 
 map("n", "<C-f>", function()
-  require("snacks").picker.grep({
+  require("snacks").picker.grep {
     hidden = true,
-  })
+  }
 end, { noremap = true, silent = true, desc = "snacks live grep" })
 
 -- Additional snacks picker commands (commented out for reference):
@@ -166,8 +180,12 @@ map("n", "gh", function()
   require("neogit").open() -- { kind = "split" }
 end, { desc = "open neogit" })
 
-map("n", "<leader>gr", function() require("snacks").picker.git_branches() end, { desc = "Git branches" })
-map("n", "<leader>gc", function() require("snacks").picker.git_log_file() end, { desc = "Git File History" })
+map("n", "<leader>gr", function()
+  require("snacks").picker.git_branches()
+end, { desc = "Git branches" })
+map("n", "<leader>gc", function()
+  require("snacks").picker.git_log_file()
+end, { desc = "Git File History" })
 map("n", "<leader>gC", ":DiffviewFileHistory %<CR>", { desc = "Git File History (Diffview)" })
 map("n", "<leader>gg", function()
   require("snacks").gitbrowse()
