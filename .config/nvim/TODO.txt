@@ -9,5 +9,4 @@ https://github.com/rest-nvim/rest.nvim
 https://github.com/mistweaverco/kulala.nvim
 https://github.com/tpope/vim-dadbod
 
-
-https://github.com/folke/noice.nvim
+https://github.com/j-hui/fidget.nvim

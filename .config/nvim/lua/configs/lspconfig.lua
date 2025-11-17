@@ -59,6 +59,17 @@ lua_capabilities.textDocument.completion.completionItem = {
   },
 }
 
+-- Fix for a bug
+-- Wrap signature_help to always use focusable = false
+-- local orig_signature_help = vim.lsp.buf.signature_help
+-- vim.lsp.buf.signature_help = function(config)
+--   config = vim.tbl_deep_extend("force", config or {}, {
+--     border = "single",
+--     focusable = false,
+--   })
+--   orig_signature_help(config)
+-- end
+
 vim.lsp.config("*", {
   capabilities = lua_capabilities,
   on_init = function(client, _)

@@ -54,6 +54,11 @@ return {
         enable = true,
         update_root = false,
       },
+      actions = {
+        open_file = {
+          quit_on_open = true,
+        },
+      },
       view = {
         width = 30,
         preserve_window_proportions = true,
@@ -81,6 +86,9 @@ return {
 
         -- Default mappings
         api.config.mappings.default_on_attach(bufnr)
+
+        -- Remove the - keymap
+        vim.keymap.del("n", "-", { buffer = bufnr })
 
         -- press F to search in directory
         vim.keymap.set("n", "F", function()
@@ -396,7 +404,7 @@ return {
       },
 
       signature = {
-        enabled = true,
+        enabled = false, -- TODO this is experimental, can enable later, it looks good
         window = {
           border = "single",
           focusable = false,
@@ -487,6 +495,16 @@ return {
   ------------------------------------------------------------------
   --- MISC
   ------------------------------------------------------------------
+  -- {
+  --   "rachartier/tiny-glimmer.nvim",
+  --   lazy = false,
+  --   event = "VeryLazy",
+  --   priority = 10, -- Low priority to catch other plugins' keybindings
+  --   config = function()
+  --     require("tiny-glimmer").setup()
+  --   end,
+  -- },
+
   { "powerman/vim-plugin-AnsiEsc", lazy = false },
 
   { "mbbill/undotree", lazy = false },
@@ -853,6 +871,20 @@ return {
       input = { enabled = true },
       picker = {
         enabled = true,
+        formatters = {
+          file = {
+            filename_first = true, -- display filename before the file path
+            --- * left: truncate the beginning of the path
+            --- * center: truncate the middle of the path
+            --- * right: truncate the end of the path
+            ---@type "left"|"center"|"right"
+            truncate = "center",
+            min_width = 100, -- minimum length of the truncated path
+            filename_only = false, -- only show the filename
+            icon_width = 2, -- width of the icon (in characters)
+            git_status_hl = true, -- use the git status highlight group for the filename
+          },
+        },
         previewers = {
           diff = {
             -- fancy: Snacks fancy diff (borders, multi-column line numbers, syntax highlighting)
@@ -888,21 +920,21 @@ return {
     },
   },
 
-  {
-    "folke/noice.nvim",
-    event = "VeryLazy",
-    opts = {
-      -- add any options here
-    },
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      "MunifTanjim/nui.nvim",
-      -- OPTIONAL:
-      --   `nvim-notify` is only needed, if you want to use the notification view.
-      --   If not available, we use `mini` as the fallback
-      "rcarriga/nvim-notify",
-    },
-  },
+  -- {
+  --   "folke/noice.nvim",
+  --   event = "VeryLazy",
+  --   opts = {
+  --     -- add any options here
+  --   },
+  --   dependencies = {
+  --     -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+  --     "MunifTanjim/nui.nvim",
+  --     -- OPTIONAL:
+  --     --   `nvim-notify` is only needed, if you want to use the notification view.
+  --     --   If not available, we use `mini` as the fallback
+  --     "rcarriga/nvim-notify",
+  --   },
+  -- },
 
   -- {
   --   "ThePrimeagen/harpoon",
