@@ -193,11 +193,11 @@ end, { desc = "Open file in git URL" })
 map("n", "<leader>gb", require("gitsigns").blame_line, { desc = "Git Blame Line" })
 map("n", "<leader>gB", require("gitsigns").blame, { desc = "Git Blame" })
 
-map("n", "<leader>gq", ":GitConflictListQf <CR>", { desc = "Git conflicts to quickfix" })
--- map("n", "<leader>gq", function()
---   vim.cmd 'cexpr system("git diff --check --relative")'
---   vim.cmd "copen"
--- end, { desc = "Git conflicts to quickfix" })
+-- map("n", "<leader>gq", ":GitConflictListQf <CR>", { desc = "Git conflicts to quickfix" })
+map("n", "<leader>gq", function()
+  vim.cmd 'cexpr system("git diff --check --relative")'
+  vim.cmd "copen"
+end, { desc = "Git conflicts to quickfix" })
 
 --------------------------------------------------------------------------------
 --                          Visual selections
@@ -256,11 +256,18 @@ end, { desc = "Get file:line:line range" })
 --------------------------------------------------------------------------------
 map("n", "<leader>b", "<cmd>enew<CR>", { desc = "buffer new" })
 map("n", "<leader><S-x>", function()
-  local current = vim.api.nvim_get_current_buf()
+  local visible_buffers = {}
+
+  -- Get all buffers visible in windows
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    visible_buffers[buf] = true
+  end
+
   local buffers_to_delete = {}
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if buf ~= current and vim.bo[buf].buftype ~= "terminal" then
+    if not visible_buffers[buf] and vim.bo[buf].buftype ~= "terminal" then
       table.insert(buffers_to_delete, buf)
     end
   end
@@ -268,7 +275,7 @@ map("n", "<leader><S-x>", function()
   for _, buf in ipairs(buffers_to_delete) do
     vim.api.nvim_buf_delete(buf, { force = false })
   end
-end, { desc = "close all buffers except the current one" })
+end, { desc = "close all buffers except those in windows" })
 
 -- map("n", "<tab>", function()
 --   require("nvchad.tabufline").next()
@@ -290,102 +297,11 @@ map("n", "<C-PageUp>", ":bprevious<CR>", { noremap = true, silent = true, desc =
 --                          Terminal
 --------------------------------------------------------------------------------
 
-local floating_terminal = { win = -1, buf = -1 }
-
-local function make_floating_terminal(opts)
-  opts = opts or {}
-  local width = opts.width or math.floor(vim.o.columns * 0.8)
-  local height = opts.height or math.floor(vim.o.lines * 0.8)
-  local row = opts.row or math.floor((vim.o.lines - height) / 2)
-  local col = opts.col or math.floor((vim.o.columns - width) / 2)
-
-  local buf = nil
-  local is_new_buf = false
-  if vim.api.nvim_buf_is_valid(opts.buf) then
-    buf = opts.buf
-  else
-    buf = vim.api.nvim_create_buf(false, true) -- No file, scratch buffer
-    is_new_buf = true
-  end
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor",
-    width = width,
-    height = height,
-    row = row,
-    col = col,
-    style = "minimal",
-    border = "rounded",
-  })
-
-  -- make it a custom terminal only if it's a new buffer
-  if is_new_buf then
-    vim.cmd.terminal()
-  end
-  vim.cmd.startinsert()
-  vim.wo[win].number = true
-  vim.wo[win].relativenumber = true
-
-  -- Custom gf mapping: open file in background window instead of terminal
-  vim.keymap.set("n", "gf", function()
-    -- Get whole WORD (includes :, /, etc) and strip common prefixes/suffixes
-    local cword = vim.fn.expand("<cWORD>"):gsub("^%s*%-?%-?>?%s*", ""):gsub("[,;\"'`)]$", "")
-    if cword == "" then
-      return
-    end
-
-    -- Parse file:line:col format
-    local file, line, col = cword:match "^(.+):(%d+):(%d+)$"
-    if not file then
-      file, line = cword:match "^(.+):(%d+)$"
-    end
-    file = file or cword
-    line = tonumber(line)
-    col = tonumber(col)
-
-    -- Switch to previously focused window
-    vim.cmd "wincmd p"
-    local target_win = vim.api.nvim_get_current_win()
-
-    -- If we're still in the terminal (no other window), bail out
-    if target_win == win then
-      return
-    end
-
-    -- Hide terminal
-    vim.api.nvim_win_hide(win)
-
-    -- Position cursor after file loads (needed to override autocmds)
-    if line then
-      vim.api.nvim_create_autocmd("BufEnter", {
-        once = true,
-        callback = function()
-          vim.schedule(function()
-            pcall(vim.api.nvim_win_set_cursor, target_win, { line, col and (col - 1) or 0 })
-            vim.cmd "normal! zz"
-          end)
-        end,
-      })
-    end
-
-    vim.cmd("edit " .. vim.fn.fnameescape(file))
-  end, { buffer = buf, desc = "Go to file in background window" })
-
-  return { win = win, buf = buf }
-end
-
-local function toggle_floating_terminal()
-  if floating_terminal.win == -1 or not vim.api.nvim_win_is_valid(floating_terminal.win) then
-    floating_terminal = make_floating_terminal { buf = floating_terminal.buf }
-  else
-    vim.api.nvim_win_hide(floating_terminal.win)
-  end
-end
-
 -- this key combo no longer works
--- map({ "n", "t", "i" }, "<C-`>", toggle_floating_terminal, { desc = "Toggle terminal" })
+-- map({ "n", "t", "i" }, "<C-`>", terminal.toggle_floating_terminal, { desc = "Toggle terminal" })
 -- NOTE: this is a hack, I mapped <C-`> to output "<Esc>[33~" (which nvim interprets as F19) in rio's config
--- map({ "n", "t", "i" }, "<F19>", toggle_floating_terminal, { desc = "Toggle terminal" })
-map({ "n", "t", "i" }, "<C-`>", toggle_floating_terminal, { desc = "Toggle terminal" })
+-- map({ "n", "t", "i" }, "<F19>", terminal.toggle_floating_terminal, { desc = "Toggle terminal" })
+map({ "n", "t", "i" }, "<C-`>", (require "terminal").toggle_floating_terminal, { desc = "Toggle terminal" })
 
 -- map <Esc> to exit terminal mode
 map("t", "<Esc>", [[<C-\><C-n>]], { noremap = true })

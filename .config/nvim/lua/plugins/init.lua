@@ -407,7 +407,6 @@ return {
         enabled = false, -- TODO this is experimental, can enable later, it looks good
         window = {
           border = "single",
-          focusable = false,
           show_documentation = true,
         },
       },
