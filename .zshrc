@@ -66,7 +66,7 @@ alias nv='nvim'
 alias vim='nvim'
 
 # VScode alias
-alias c='cursor'
+alias c='code'
 
 # kitty terminal SSH fix
 # alias ssh="kitty +kitten ssh"

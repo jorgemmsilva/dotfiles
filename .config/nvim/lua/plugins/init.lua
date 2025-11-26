@@ -834,18 +834,18 @@ return {
   --   end,
   -- },
 
-  {
-    "stevearc/oil.nvim",
-    opts = {},
-    -- Optional dependencies
-    -- dependencies = { { "echasnovski/mini.icons", opts = {} } },
-    dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
-    -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
-    lazy = false,
-    init = function()
-      require("oil").setup()
-    end,
-  },
+  -- {
+  --   "stevearc/oil.nvim",
+  --   opts = {},
+  --   -- Optional dependencies
+  --   -- dependencies = { { "echasnovski/mini.icons", opts = {} } },
+  --   dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+  --   -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+  --   lazy = false,
+  --   init = function()
+  --     require("oil").setup()
+  --   end,
+  -- },
 
   {
     "nvim-mini/mini.nvim",
@@ -870,6 +870,14 @@ return {
       input = { enabled = true },
       picker = {
         enabled = true,
+        win = {
+          input = {
+            keys = {
+              ["<Up>"] = { "history_back", mode = { "i", "n" } },
+              ["<Down>"] = { "history_forward", mode = { "i", "n" } },
+            },
+          },
+        },
         formatters = {
           file = {
             filename_first = true, -- display filename before the file path

@@ -180,6 +180,9 @@ map("n", "gh", function()
   require("neogit").open() -- { kind = "split" }
 end, { desc = "open neogit" })
 
+map("n", "<leader>gs", function()
+  require("snacks").picker.git_status()
+end, { desc = "Git status" })
 map("n", "<leader>gr", function()
   require("snacks").picker.git_branches()
 end, { desc = "Git branches" })
@@ -229,7 +232,7 @@ map("v", "K", ":m '<-2<CR>gv=gv")
 vim.opt.clipboard = "" -- disables use of system clipboard
 map("n", "<leader>y", '"+y', { desc = "copy to system clipboard" })
 map("v", "<leader>y", '"+y', { desc = "copy to system clipboard" })
-map({ "i", "!", "t", "c" }, "<C-p>", '<C-r>"', { desc = "Paste from clipboard in insert mode" })
+-- map({ "i", "!", "t", "c" }, "<C-p>", '<C-r>"', { desc = "Paste from clipboard in insert mode" })
 
 -- paste from the yank register
 map({ "n", "v", "x" }, "<leader>p", '"0p', { noremap = true, desc = "always paste from the yank register" })
