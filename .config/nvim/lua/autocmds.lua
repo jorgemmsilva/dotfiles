@@ -109,10 +109,22 @@ vim.keymap.set("n", "<leader>rr", ToggleAutoRefresh, {
 })
 
 --------------
-
+-- dockerfile highlight
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   pattern = { "Dockerfile", "Dockerfile.*", "*.dockerfile" },
   callback = function()
     vim.bo.filetype = "dockerfile"
+  end,
+})
+
+--------------
+-- yankring
+vim.api.nvim_create_autocmd("TextYankPost", {
+  callback = function()
+    if vim.v.event.operator == "y" then
+      for i = 9, 1, -1 do -- Shift all numbered registers.
+        vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
+      end
+    end
   end,
 })
