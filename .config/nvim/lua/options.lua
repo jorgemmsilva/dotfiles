@@ -72,3 +72,17 @@ vim.opt.titlestring = 'nvim %{expand("%:p")}'
 
 -- allow <C-o> to go to a closed buffer
 vim.opt.jumpoptions:remove "clean"
+
+-- filetype detection
+vim.filetype.add {
+  extension = {
+    nu = "nu",
+    dockerfile = "dockerfile",
+  },
+  filename = {
+    ["Dockerfile"] = "dockerfile",
+  },
+  pattern = {
+    ["Dockerfile.*"] = "dockerfile",
+  },
+}

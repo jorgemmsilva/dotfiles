@@ -30,14 +30,6 @@ alias la='ls -a'
 alias lla='ls -la'
 alias lt='ls --tree'
 
-#git graph
-alias lg="git log --oneline --decorate --all --graph"
-
-#directory tree
-alias dtree="ls -R | rg ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'"
-alias ftree="tree -h -C"
-
-
 # alias for SimpleHTTPServer
 alias serve="python -m SimpleHTTPServer"
 
@@ -53,17 +45,16 @@ alias gp="git pull"
 alias gps="git push"
 alias gpsf="git push --force-with-lease"
 alias ga="git add -A"
-alias gam="git commit --am"
 alias gc="git checkout"
 alias gprune="git fetch --prune ; git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs git branch -D"
 alias gcleantags="git tag -l | xargs git tag -d && git fetch -t"
 alias gcleanup="git fetch --prune --prune-tags && git branch -vv | grep 'origin/.*: gone]' | awk '{print $1}' | xargs git branch -D"
+alias gl="git log --oneline --decorate --all --graph"
 
 
 # FASD alias
 alias v='f -e nvim' # quick opening files with neo vim
 alias nv='nvim'
-alias vim='nvim'
 
 # VScode alias
 alias c='code'

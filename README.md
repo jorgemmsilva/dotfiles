@@ -4,7 +4,7 @@ my dotfiles for ease of portability
 
 ## Install
 
-https://ohmyz.sh/
+<!-- https://ohmyz.sh/ -->
 
 https://github.com/starship/starship
 
@@ -17,3 +17,5 @@ https://github.com/clvv/fasd or https://github.com/ajeetdsouza/zoxide
 https://github.com/junegunn/fzf
 
 https://neovim.io/
+
+https://carapace-sh.github.io/

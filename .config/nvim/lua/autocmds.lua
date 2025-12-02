@@ -109,15 +109,6 @@ vim.keymap.set("n", "<leader>rr", ToggleAutoRefresh, {
 })
 
 --------------
--- dockerfile highlight
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = { "Dockerfile", "Dockerfile.*", "*.dockerfile" },
-  callback = function()
-    vim.bo.filetype = "dockerfile"
-  end,
-})
-
---------------
 -- yankring
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()

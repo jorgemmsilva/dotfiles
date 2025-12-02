@@ -1,5 +1,4 @@
 local map = vim.keymap.set
-local bufnr = vim.api.nvim_get_current_buf()
 
 -- modes:
 -- n -- Normal mode -- Regular mode when you’re navigating around
@@ -30,8 +29,8 @@ map("n", "<C-j>", "<C-w>j", { desc = "switch window down" })
 map("n", "<C-k>", "<C-w>k", { desc = "switch window up" })
 
 -- window resizing
-map("n", "<C-<>", "5<C-w><", { desc = "decrease window width" })
-map("n", "<C->>", "5<C-w>>", { desc = "increase window width" })
+-- map("n", "<C-<>", "5<C-w><", { desc = "decrease window width" })
+-- map("n", "<C->>", "5<C-w>>", { desc = "increase window width" })
 -- map("n", "<C-S-<>", "3<C-w>-", { desc = "decrease window height" })
 -- map("n", "<C-S->>", "3<C-w>+", { desc = "increase window height" })
 
