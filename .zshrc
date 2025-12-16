@@ -14,6 +14,8 @@ plugins=(
   systemd
   zsh-autosuggestions
   zsh-syntax-highlighting
+  # fast-syntax-highlighting
+  # zsh-autocomplete
   golang
   archlinux
   fzf
@@ -59,18 +61,6 @@ alias nv='nvim'
 # VScode alias
 alias c='code'
 
-# kitty terminal SSH fix
-# alias ssh="kitty +kitten ssh"
-
-# kitty clear screen with ctrl+k
-#scroll-and-clear-screen() {
-#    printf '\n%.0s' {1..$LINES}
-#    zle clear-screen
-#}
-#zle -N scroll-and-clear-screen
-#bindkey '^k' scroll-and-clear-screen
-
-
 # RUST
 alias cargo-features='function _cargo_features() { cargo metadata --format-version=1 | jq --arg pkg "$1" '"'"'.packages[] | select(.name == $pkg) | .features'"'"'; }; _cargo_features'
 
@@ -80,9 +70,19 @@ eval "$(direnv hook zsh)"
 # setup fasd
 eval "$(fasd --init auto)"
 
+# auto complete
+# export CARAPACE_BRIDGES='fish,bash,inshellisense' # optional
+# zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+# source <(carapace _carapace)
+
+
+# autoload -U compinit
+# compinit -i
+
+
+
 #####################################
 #
 # needs to be at the end
 eval "$(starship init zsh)"
-
 

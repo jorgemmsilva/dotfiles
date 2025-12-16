@@ -125,47 +125,44 @@ return {
     "stevearc/conform.nvim",
     event = "BufWritePre", -- format on save
     opts = function()
-      local opts = require "configs.conform"
-
-      opts.formatters_by_ft = vim.tbl_deep_extend("force", opts.formatters_by_ft or {}, {
-        rust = { "rustfmt_nightly" },
-        solidity = { "forge_fmt" },
-        lua = { "stylua" },
-        json = { "jq" },
-        toml = { "taplo" },
-      })
-
-      opts.formatters = vim.tbl_deep_extend("force", opts.formatters or {}, {
-        rustfmt_nightly = {
-          command = "rustfmt",
-          options = {
-            default_edition = "2021",
-          },
-          env = { RUSTUP_TOOLCHAIN = "nightly" },
-          args = function(self, ctx)
-            local args = {
-              "--emit=stdout",
-              "--unstable-features",
-            }
-            -- Get the edition from Cargo.toml or use default
-            local edition = require("conform.util").parse_rust_edition(ctx.dirname) or self.options.default_edition
-            table.insert(args, "--edition=" .. edition)
-            return args
-          end,
-          stdin = true,
-          cwd = require("conform.util").root_file {
-            "Cargo.toml",
-            "rustfmt.toml",
-            ".rustfmt.toml",
+      local opts = {
+        formatters_by_ft = {
+          rust = { "rustfmt_nightly" },
+          solidity = { "forge_fmt" },
+          lua = { "stylua" },
+          json = { "jq" },
+          toml = { "taplo" },
+        },
+        format_on_save = {
+          timeout_ms = 5000,
+          lsp_fallback = true,
+        },
+        formatters = {
+          rustfmt_nightly = {
+            command = "rustfmt",
+            options = {
+              default_edition = "2021",
+            },
+            env = { RUSTUP_TOOLCHAIN = "nightly" },
+            args = function(self, ctx)
+              local args = {
+                "--emit=stdout",
+                "--unstable-features",
+              }
+              -- Get the edition from Cargo.toml or use default
+              local edition = require("conform.util").parse_rust_edition(ctx.dirname) or self.options.default_edition
+              table.insert(args, "--edition=" .. edition)
+              return args
+            end,
+            stdin = true,
+            cwd = require("conform.util").root_file {
+              "Cargo.toml",
+              "rustfmt.toml",
+              ".rustfmt.toml",
+            },
           },
         },
-      })
-
-      opts.format_on_save = {
-        lsp_format = "fallback",
-        timeout_ms = 2000,
       }
-
       return opts
     end,
   },
@@ -188,7 +185,11 @@ return {
     cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall" },
     opts = {
       PATH = "append", -- use stuff that already exists on $PATH
-      ensure_installed = {
+    },
+    config = function(_, opts)
+      require("mason").setup(opts)
+
+      local ensure_installed = {
         "lua-language-server",
         "html-lsp",
         "prettier",
@@ -198,8 +199,21 @@ return {
         "solhint",
         "nomicfoundation-solidity-language-server",
         "copilot-language-server",
-      },
-    },
+        "typescript-language-server",
+        "tailwindcss-language-server",
+        "eslint-lsp",
+      }
+
+      local registry = require "mason-registry"
+      registry.refresh(function()
+        for _, name in ipairs(ensure_installed) do
+          local pkg = registry.get_package(name)
+          if not pkg:is_installed() then
+            pkg:install()
+          end
+        end
+      end)
+    end,
   },
 
   ------------------------------------------------------------------
@@ -507,6 +521,12 @@ return {
   { "powerman/vim-plugin-AnsiEsc", lazy = false },
 
   { "mbbill/undotree", lazy = false },
+
+  {
+    "esmuellert/vscode-diff.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    cmd = "CodeDiff",
+  },
 
   {
     "nvim-treesitter/nvim-treesitter",

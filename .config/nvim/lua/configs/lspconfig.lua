@@ -4,6 +4,9 @@ local servers = {
   "gopls",
   "solidity_ls_nomicfoundation",
   "lua_ls",
+  "ts_ls",
+  "tailwindcss",
+  "eslint",
   -- "copilot",
 }
 
