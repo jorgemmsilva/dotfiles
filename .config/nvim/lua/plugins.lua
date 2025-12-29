@@ -446,7 +446,6 @@ return {
 
       -- Default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
-      -- TODO check if integration with autopairs is good
       sources = {
         default = { "lsp", "path", "snippets", "buffer", "crates" },
         providers = {
@@ -454,10 +453,6 @@ return {
             name = "crates",
             module = "blink.compat.source",
           },
-          -- magenta = {
-          --   name = "magenta",
-          --   module = "blink.compat.source",
-          -- },
         },
       },
 
@@ -513,6 +508,12 @@ return {
         end,
       })
     end,
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {},
   },
 
   {
