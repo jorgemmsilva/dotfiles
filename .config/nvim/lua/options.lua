@@ -71,7 +71,7 @@ vim.opt.titlelen = 0 -- do not shorten
 vim.opt.titlestring = 'nvim %{expand("%:p")}'
 
 -- allow <C-o> to go to a closed buffer
-vim.opt.jumpoptions:remove "clean"
+-- vim.opt.jumpoptions:remove "clean"
 
 -- filetype detection
 vim.filetype.add {

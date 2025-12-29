@@ -60,19 +60,19 @@ function M.list()
   end
 
   local items = {}
-  for _, path in ipairs(lines) do
+  for i, path in ipairs(lines) do
     table.insert(items, {
+      idx = i,
       file = path,
-      text = vim.fn.fnamemodify(path, ":~:."),
+      text = path,
     })
   end
 
   local Snacks = require "snacks"
   Snacks.picker.pick {
     items = items,
-    format = function(item)
-      return { { item.text, "Normal" } }
-    end,
+    format = "file",
+    preview = "file",
     confirm = function(picker, item)
       picker:close()
       vim.cmd("edit " .. vim.fn.fnameescape(item.file))
