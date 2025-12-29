@@ -10,12 +10,6 @@ local servers = {
   -- "copilot",
 }
 
---------------------------------------------------------------------------------
---                          Imported from nvchad lsp configs
---------------------------------------------------------------------------------
-
-dofile(vim.g.base46_cache .. "lsp")
-
 -- diagnostics config
 local sev = vim.diagnostic.severity
 vim.diagnostic.config {
@@ -35,7 +29,6 @@ local lua_lsp_settings = {
     workspace = {
       library = {
         vim.fn.expand "$VIMRUNTIME/lua",
-        vim.fn.stdpath "data" .. "/lazy/ui/nvchad_types",
         vim.fn.stdpath "data" .. "/lazy/lazy.nvim/lua/lazy",
         "${3rd}/luv/library",
       },
@@ -61,17 +54,6 @@ lua_capabilities.textDocument.completion.completionItem = {
     },
   },
 }
-
--- Fix for a bug
--- Wrap signature_help to always use focusable = false
--- local orig_signature_help = vim.lsp.buf.signature_help
--- vim.lsp.buf.signature_help = function(config)
---   config = vim.tbl_deep_extend("force", config or {}, {
---     border = "single",
---     focusable = false,
---   })
---   orig_signature_help(config)
--- end
 
 vim.lsp.config("*", {
   capabilities = lua_capabilities,

@@ -1,3 +1,6 @@
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 vim.opt.relativenumber = true
 
 -- don't do backups, but let me keep undo's for days
@@ -20,8 +23,6 @@ vim.o.laststatus = 3 -- statusline style (always show)
 vim.o.showmode = false
 vim.o.splitkeep = "screen"
 
--- vim.o.clipboard = "unnamedplus"
-
 -- Indenting
 vim.o.expandtab = true
 vim.o.shiftwidth = 2
@@ -33,10 +34,11 @@ vim.opt.fillchars = { eob = " " } -- Characters to fill the statuslines, vertica
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.mouse = "a" -- mouse enabled for [a]ll modes
+vim.o.mousemoveevent = true
 
 -- Numbers
 vim.o.number = true
--- vim.o.numberwidth = 2
+vim.o.numberwidth = 2
 -- vim.o.ruler = false
 
 -- disable nvim intro
@@ -72,17 +74,3 @@ vim.opt.titlestring = 'nvim %{expand("%:p")}'
 
 -- allow <C-o> to go to a closed buffer
 -- vim.opt.jumpoptions:remove "clean"
-
--- filetype detection
-vim.filetype.add {
-  extension = {
-    nu = "nu",
-    dockerfile = "dockerfile",
-  },
-  filename = {
-    ["Dockerfile"] = "dockerfile",
-  },
-  pattern = {
-    ["Dockerfile.*"] = "dockerfile",
-  },
-}

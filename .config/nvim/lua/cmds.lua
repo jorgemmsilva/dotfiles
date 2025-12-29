@@ -1,8 +1,6 @@
 -- use :Q to quit all
 vim.cmd "command! Q q"
 vim.cmd "command! QA qa"
--- vim.cmd "command! QA<bang> qa<bang>"
--- vim.cmd [[command! -bang Q qa<bang>]]
 
 -- open a vertical split and navigate back on the left window
 vim.api.nvim_create_user_command("Vs", function()
@@ -30,7 +28,7 @@ vim.api.nvim_create_user_command("StripAnsi", function()
 end, {})
 
 -- Terminal commands
-local terminal = require "terminal"
+local terminal = require "custom.terminal"
 
 vim.api.nvim_create_user_command("TermNewH", function()
   terminal.open_split_terminal(false)
@@ -43,3 +41,4 @@ end, { desc = "Open new terminal in horizontal split" })
 vim.api.nvim_create_user_command("TermNewV", function()
   terminal.open_split_terminal(true)
 end, { desc = "Open new terminal in vertical split" })
+

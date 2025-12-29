@@ -149,10 +149,5 @@ function M.clear()
   print "Cleared pinned files"
 end
 
--- Keybindings
-vim.keymap.set("n", "<leader>=a", M.add, { desc = "Pin current file" })
-vim.keymap.set("n", "=", M.list, { desc = "List pinned files" })
-vim.keymap.set("n", "<leader>=r", M.remove, { desc = "Remove pinned file" })
-vim.keymap.set("n", "<leader>=c", M.clear, { desc = "Clear pinned files" })
-
 return M
+

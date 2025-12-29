@@ -1,44 +1,20 @@
 return {
 
-  -- {
-  --   "NvChad/NvChad",
-  --   lazy = false,
-  --   branch = "v2.5",
-  -- },
-
   ------------------------------------------------------------------
-  --- NVChad
+  --- Theme
   ------------------------------------------------------------------
-
   {
-    "nvchad/base46",
-    build = function()
-      require("base46").load_all_highlights()
-    end,
-  },
-
-  -- currently only needed for the custom LSP renamer and the tabufline and status bar
-  {
-    "nvchad/ui",
+    "rebelot/kanagawa.nvim",
     lazy = false,
-    config = function()
-      require "nvchad"
+    opts = {
+      dimInactive = false,
+    },
+    config = function(_, opts)
+      require("kanagawa").setup(opts)
+      vim.cmd "colorscheme kanagawa"
     end,
   },
 
-  -- { "nvzone/volt", lazy = true },
-  -- { "nvzone/menu", lazy = true },
-  -- { "nvzone/minty", cmd = { "Huefy", "Shades" } },
-
-  {
-    "nvim-tree/nvim-web-devicons",
-    opts = function()
-      dofile(vim.g.base46_cache .. "devicons")
-      return { override = require "nvchad.icons.devicons" }
-    end,
-  },
-
-  -- file managing , picker etc
   {
     "nvim-tree/nvim-tree.lua",
     cmd = { "NvimTreeToggle", "NvimTreeFocus" },
@@ -62,6 +38,9 @@ return {
       view = {
         width = 30,
         preserve_window_proportions = true,
+        number = false,
+        relativenumber = false,
+        signcolumn = "no",
       },
       renderer = {
         root_folder_label = false,
@@ -112,9 +91,30 @@ return {
     keys = { "<leader>", "<c-w>", '"', "'", "`", "c", "v", "g" },
     cmd = "WhichKey",
     opts = function()
-      dofile(vim.g.base46_cache .. "whichkey")
       return {}
     end,
+  },
+
+  {
+    "akinsho/bufferline.nvim",
+    version = "*",
+    lazy = false,
+    dependencies = "nvim-tree/nvim-web-devicons",
+    opts = {
+      options = {
+        separator_style = "slant",
+        diagnostics = "nvim_lsp",
+        hover = {
+          enabled = true,
+          delay = 100,
+          reveal = { "close" },
+        },
+        diagnostics_indicator = function(count, level, diagnostics_dict, context)
+          local icon = level:match "error" and " " or " "
+          return " " .. icon .. count
+        end,
+      },
+    },
   },
 
   ------------------------------------------------------------------
@@ -173,10 +173,10 @@ return {
 
   {
     "neovim/nvim-lspconfig",
-    event = "User FilePost",
+    event = "VeryLazy",
     opts = { diagnostics = { virtual_text = false } }, -- required for tiny-inline-diagnostic
     config = function()
-      require "configs.lspconfig"
+      require "config.lspconfig"
     end,
   },
 
@@ -216,13 +216,26 @@ return {
     end,
   },
 
+  -- lazy loads lua projects to LUA_LSP as they are required
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
+  },
+
   ------------------------------------------------------------------
   --- Git stuff
   ------------------------------------------------------------------
 
   {
     "lewis6991/gitsigns.nvim",
-    event = "User FilePost",
+    event = "VeryLazy",
     opts = {
       signs = {
         delete = { text = "󰍵" },
@@ -274,29 +287,30 @@ return {
         map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "Git: Preview Hunk" })
         map("n", "<leader>hi", gitsigns.preview_hunk_inline, { desc = "Git: Preview Hunk Inline" })
 
-        map("n", "<leader>hd", gitsigns.diffthis)
+        map("n", "<leader>hd", gitsigns.diffthis, { desc = "Git: diffthis" })
 
         map("n", "<leader>hD", function()
           ---@diagnostic disable-next-line: param-type-mismatch
           gitsigns.diffthis "~"
-        end)
+        end, { desc = 'Git: diffthis "~"' })
 
         map("n", "<leader>hQ", function()
           ---@diagnostic disable-next-line: param-type-mismatch
           gitsigns.setqflist "all"
         end)
-        map("n", "<leader>hq", gitsigns.setqflist)
+        -- map("n", "<leader>hq", gitsigns.setqflist)
 
         -- Toggles
         map("n", "<leader>tb", gitsigns.toggle_current_line_blame, { desc = "gitsigns: toggle current line blame" })
         map("n", "<leader>tw", gitsigns.toggle_word_diff, { desc = "gitsigns: toggle word diff" })
 
         -- Text object
-        map({ "o", "x" }, "ih", gitsigns.select_hunk)
+        -- map({ "o", "x" }, "ih", gitsigns.select_hunk)
       end,
     },
   },
 
+  -- TODO try to rm this and use the vscode-diff instead
   { "sindrets/diffview.nvim", lazy = false },
 
   {
@@ -313,19 +327,13 @@ return {
       "folke/snacks.nvim", -- optional
     },
 
-    config = function()
-      -- NOTE: need to re-apply these theme changes, otherwise they will disappear
-      dofile(vim.g.base46_cache .. "syntax")
-      -- dofile(vim.g.base46_cache .. "git")
-
-      require("neogit").setup {
-        disable_commit_confirmation = true,
-        integrations = {
-          diffview = true,
-          snacks = true,
-        },
-      }
-    end,
+    opts = {
+      disable_commit_confirmation = true,
+      integrations = {
+        diffview = true,
+        snacks = true,
+      },
+    },
   },
 
   {
@@ -383,7 +391,6 @@ return {
     lazy = false,
     -- optional: provides snippets for the snippet source
     dependencies = {
-      --"rafamadriz/friendly-snippets"
       "saecki/crates.nvim",
     },
 
@@ -435,30 +442,6 @@ return {
             -- focusable = false,
           },
         },
-        -- menu = require("nvchad.blink").menu,
-        menu = {
-          scrollbar = true,
-          border = "single",
-          draw = {
-            padding = { 1, 1 },
-            columns = { { "label" }, { "kind_icon" }, { "kind" } },
-            components = {
-              kind_icon = {
-                text = function(ctx)
-                  local icons = require "nvchad.icons.lspkind"
-                  local icon = (icons[ctx.kind] or "󰈚")
-                  return icon
-                end,
-              },
-
-              kind = {
-                highlight = function(ctx)
-                  return ctx.kind
-                end,
-              },
-            },
-          },
-        },
       },
 
       -- Default list of enabled providers defined so that you can extend it
@@ -489,38 +472,11 @@ return {
     opts_extend = { "sources.default" },
   },
 
-  {
-    "supermaven-inc/supermaven-nvim",
-    lazy = false,
-    opts = {
-      keymaps = {
-        accept_suggestion = "<Tab>",
-        -- clear_suggestion = "<C-S-h>",
-        -- accept_word = "<S-l>",
-      },
-      color = {
-        suggestion_color = "#7a7e85",
-        cterm = 244,
-      },
-    },
-  },
-
   ------------------------------------------------------------------
   --- MISC
   ------------------------------------------------------------------
-  -- {
-  --   "rachartier/tiny-glimmer.nvim",
-  --   lazy = false,
-  --   event = "VeryLazy",
-  --   priority = 10, -- Low priority to catch other plugins' keybindings
-  --   config = function()
-  --     require("tiny-glimmer").setup()
-  --   end,
-  -- },
 
-  { "powerman/vim-plugin-AnsiEsc", lazy = false },
-
-  { "mbbill/undotree", lazy = false },
+  -- { "powerman/vim-plugin-AnsiEsc", lazy = false },
 
   {
     "esmuellert/vscode-diff.nvim",
@@ -649,19 +605,6 @@ return {
     end,
     opts = {
       bar = { hover = false },
-    },
-  },
-
-  -- lazy loads lua projects to LUA_LSP as they are required
-  {
-    "folke/lazydev.nvim",
-    ft = "lua", -- only load on lua files
-    opts = {
-      library = {
-        -- See the configuration section for more details
-        -- Load luvit types when the `vim.uv` word is found
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-      },
     },
   },
 
@@ -832,6 +775,7 @@ return {
     end,
   },
 
+  -- gives highlights for motions
   {
     "unblevable/quick-scope",
     lazy = false,
@@ -840,38 +784,21 @@ return {
     end,
   },
 
-  -- {
-  --   "MagicDuck/grug-far.nvim",
-  --   -- Note (lazy loading): grug-far.lua defers all it's requires so it's lazy by default
-  --   -- additional lazy config to defer loading is not really needed...
-  --   init = function()
-  --     -- optional setup call to override plugin options
-  --     -- alternatively you can set options with vim.g.grug_far = { ... }
-  --     require("grug-far").setup {
-  --       -- options, see Configuration section below
-  --       -- there are no required options atm
-  --     }
-  --   end,
-  -- },
-
-  -- {
-  --   "stevearc/oil.nvim",
-  --   opts = {},
-  --   -- Optional dependencies
-  --   -- dependencies = { { "echasnovski/mini.icons", opts = {} } },
-  --   dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
-  --   -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
-  --   lazy = false,
-  --   init = function()
-  --     require("oil").setup()
-  --   end,
-  -- },
-
   {
     "nvim-mini/mini.nvim",
+    lazy = false,
     version = "*",
+    specs = { { "nvim-tree/nvim-web-devicons", enabled = false, optional = true } },
     init = function()
       require("mini.cursorword").setup()
+      require("mini.icons").setup()
+      require("mini.statusline").setup()
+
+      -- override nvim-tree icons
+      package.preload["nvim-web-devicons"] = function()
+        require("mini.icons").mock_nvim_web_devicons()
+        return package.loaded["nvim-web-devicons"]
+      end
     end,
   },
 
@@ -947,74 +874,6 @@ return {
     },
   },
 
-  -- {
-  --   "folke/noice.nvim",
-  --   event = "VeryLazy",
-  --   opts = {
-  --     -- add any options here
-  --   },
-  --   dependencies = {
-  --     -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-  --     "MunifTanjim/nui.nvim",
-  --     -- OPTIONAL:
-  --     --   `nvim-notify` is only needed, if you want to use the notification view.
-  --     --   If not available, we use `mini` as the fallback
-  --     "rcarriga/nvim-notify",
-  --   },
-  -- },
-
-  -- {
-  --   "ThePrimeagen/harpoon",
-  --   branch = "harpoon2",
-  --   dependencies = { "nvim-lua/plenary.nvim" },
-  --   init = function()
-  --     local harpoon = require "harpoon"
-  --     harpoon:setup()
-  --     local conf = require("telescope.config").values
-  --     -- add to the list
-  --     vim.keymap.set("n", "<leader>a", function()
-  --       harpoon:list():add()
-  --     end, { desc = "add file to harpoon" })
-  --
-  --     vim.keymap.set("n", "=", function()
-  --       harpoon.ui:toggle_quick_menu(harpoon:list())
-  --     end)
-  --     -- toggle harpoon menu
-  --     vim.keymap.set("n", "-", function()
-  --       local make_finder = function()
-  --         local paths = {}
-  --         for _, item in ipairs(harpoon:list()) do
-  --           table.insert(paths, item.value)
-  --         end
-  --         return require("telescope.finders").new_table {
-  --           results = paths,
-  --         }
-  --       end
-  --
-  --       require("telescope.pickers")
-  --         .new({}, {
-  --           prompt_title = "Harpoon",
-  --           finder = make_finder(),
-  --           previewer = conf.file_previewer {},
-  --           sorter = conf.generic_sorter {},
-  --           attach_mappings = function(prompt_buffer_number, map)
-  --             -- delete entries from the telescope list
-  --             map("i", "<C-d>", function()
-  --               local state = require "telescope.actions.state"
-  --               local selected_entry = state.get_selected_entry()
-  --               local current_picker = state.get_current_picker(prompt_buffer_number)
-  --               harpoon:list():remove(selected_entry)
-  --               current_picker:refresh(make_finder())
-  --             end)
-  --
-  --             return true
-  --           end,
-  --         })
-  --         :find()
-  --     end, { noremap = true, desc = "Open harpoon window" })
-  --   end,
-  -- },
-
   {
     "dmtrKovalenko/fff.nvim",
     build = "cargo build --release",
@@ -1049,16 +908,16 @@ return {
   --- MARKDOWN
   ------------------------------------------------------------------
 
-  -- {
-  --   "MeanderingProgrammer/render-markdown.nvim",
-  --   lazy = false,
-  --   dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-  --   -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-  --   -- dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" }, -- if you prefer nvim-web-devicons
-  --   ---@module 'render-markdown'
-  --   ---@type render.md.UserConfig
-  --   opts = {},
-  -- },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    lazy = false,
+    dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+    -- dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" }, -- if you prefer nvim-web-devicons
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
+  },
 
   ------------------------------------------------------------------
   --- RUST
@@ -1207,42 +1066,11 @@ return {
   ------------------------------------------------------------------
   --- TYPESCRIPT
   ------------------------------------------------------------------
-  { "dmmulroy/ts-error-translator.nvim" },
+  -- { "dmmulroy/ts-error-translator.nvim" },
 
   ------------------------------------------------------------------
   --- AI
   ------------------------------------------------------------------
-
-  -- {
-  --   "coder/claudecode.nvim",
-  --   dependencies = { "folke/snacks.nvim" },
-  --   config = true,
-  --   opts = {
-  --     terminal = {
-  --       provider = "snacks",
-  --     },
-  --   },
-  --   keys = {
-  --     { "<leader>a", nil, desc = "AI/Claude Code" },
-  --     { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
-  --     { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
-  --     { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
-  --     { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
-  --     { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
-  --     { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
-  --     { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
-  --     {
-  --       "<leader>as",
-  --       "<cmd>ClaudeCodeTreeAdd<cr>",
-  --       desc = "Add file",
-  --       ft = { "NvimTree", "neo-tree", "oil", "minifiles" },
-  --     },
-  --     -- Diff management
-  --     { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
-  --     { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
-  --   },
-  -- },
-  --
 
   {
     "folke/sidekick.nvim",

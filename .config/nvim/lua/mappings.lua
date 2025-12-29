@@ -285,34 +285,34 @@ map("n", "<leader><S-x>", function()
   end
 end, { desc = "close all buffers except those in windows" })
 
--- map("n", "<tab>", function()
---   require("nvchad.tabufline").next()
--- end, { desc = "buffer goto next" })
---
--- map("n", "<S-tab>", function()
---   require("nvchad.tabufline").prev()
--- end, { desc = "buffer goto prev" })
---
 map("n", "<leader>x", function()
-  require("nvchad.tabufline").close_buffer()
+  Snacks.bufdelete()
 end, { desc = "buffer close" })
 
 -- Navigate buffers with Ctrl + PageDown/PageUp
 map("n", "<C-PageDown>", ":bnext<CR>", { noremap = true, silent = true, desc = "Next buffer" })
 map("n", "<C-PageUp>", ":bprevious<CR>", { noremap = true, silent = true, desc = "Previous buffer" })
+map("n", "<leader>]", ":bnext<CR>", { desc = "buffer next" })
+map("n", "<leader>[", ":bprevious<CR>", { desc = "buffer prev" })
 
 --------------------------------------------------------------------------------
 --                          Terminal
 --------------------------------------------------------------------------------
 
 -- this key combo no longer works
--- map({ "n", "t", "i" }, "<C-`>", terminal.toggle_floating_terminal, { desc = "Toggle terminal" })
--- NOTE: this is a hack, I mapped <C-`> to output "<Esc>[33~" (which nvim interprets as F19) in rio's config
--- map({ "n", "t", "i" }, "<F19>", terminal.toggle_floating_terminal, { desc = "Toggle terminal" })
-map({ "n", "t", "i" }, "<C-`>", (require "terminal").toggle_floating_terminal, { desc = "Toggle terminal" })
+map({ "n", "t", "i" }, "<C-`>", (require "custom.terminal").toggle_floating_terminal, { desc = "Toggle terminal" })
 
 -- map <Esc> to exit terminal mode
 map("t", "<Esc>", [[<C-\><C-n>]], { noremap = true })
+
+--------------------------------------------------------------------------------
+--                          Pinned Files
+--------------------------------------------------------------------------------
+
+map("n", "<leader>=a", require("custom.pinned").add, { desc = "Pin current file" })
+map("n", "=", require("custom.pinned").list, { desc = "List pinned files" })
+map("n", "<leader>=r", require("custom.pinned").remove, { desc = "Remove pinned file" })
+map("n", "<leader>=c", require("custom.pinned").clear, { desc = "Clear pinned files" })
 
 --------------------------------------------------------------------------------
 --                          MISC
@@ -334,11 +334,6 @@ map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { noremap = true, silent = true, de
 -- Comment
 map("n", "<leader>/", "gcc", { desc = "toggle comment", remap = true })
 map("v", "<leader>/", "gc", { desc = "toggle comment", remap = true })
-
--- themes
-map("n", "<leader>th", function()
-  require("nvchad.themes").open()
-end, { desc = "nvchad themes picker" })
 
 -- toggle line wrap
 map("n", "<leader>z", function()
@@ -371,3 +366,144 @@ map(
   [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
   { desc = "replace all occurances current word" }
 )
+
+-- Toggle quickfix list
+map("n", "<leader>q", function()
+  local qf_exists = false
+  for _, win in pairs(vim.fn.getwininfo()) do
+    if win["quickfix"] == 1 then
+      qf_exists = true
+    end
+  end
+  if qf_exists == true then
+    vim.cmd "cclose"
+  else
+    vim.cmd "botright copen"
+  end
+end, { desc = "Toggle quickfix" })
+
+--------------------------------------------------------------------------------
+--                          Debugger
+--------------------------------------------------------------------------------
+
+-- Toggle breakpoint
+map("n", "<leader>db", function()
+  require("dap").toggle_breakpoint()
+end, { desc = "Debug: Toggle breakpoint" })
+
+-- Set conditional breakpoint
+map("n", "<leader>dB", function()
+  require("dap").set_breakpoint(vim.fn.input "Breakpoint condition: ")
+end, { desc = "Debug: Set conditional breakpoint" })
+
+-- Set log point
+map("n", "<leader>dl", function()
+  require("dap").set_breakpoint(nil, nil, vim.fn.input "Log point message: ")
+end, { desc = "Debug: Set log point" })
+
+-- Start/Continue debugging
+map("n", "<leader>dc", function()
+  require("dap").continue()
+end, { desc = "Debug: Start/Continue" })
+
+-- Run last configuration
+map("n", "<leader>dr", function()
+  require("dap").run_last()
+end, { desc = "Debug: Run last" })
+
+-- Restart debugging session
+map("n", "<leader>dR", function()
+  require("dap").restart()
+end, { desc = "Debug: Restart" })
+
+-- Step over
+map("n", "<leader>do", function()
+  require("dap").step_over()
+end, { desc = "Debug: Step over" })
+
+-- Step into
+map("n", "<leader>di", function()
+  require("dap").step_into()
+end, { desc = "Debug: Step into" })
+
+-- Step out
+map("n", "<leader>dO", function()
+  require("dap").step_out()
+end, { desc = "Debug: Step out" })
+
+-- Terminate/Stop debugging
+map("n", "<leader>dt", function()
+  require("dap").terminate()
+end, { desc = "Debug: Terminate" })
+
+-- Pause debugging
+map("n", "<leader>dp", function()
+  require("dap").pause()
+end, { desc = "Debug: Pause" })
+
+-- Toggle DAP UI
+map("n", "<leader>du", function()
+  require("dapui").toggle()
+end, { desc = "Debug: Toggle UI" })
+
+-- Open DAP UI
+map("n", "<leader>dU", function()
+  require("dapui").open()
+end, { desc = "Debug: Open UI" })
+
+-- Close DAP UI
+map("n", "<leader>dC", function()
+  require("dapui").close()
+end, { desc = "Debug: Close UI" })
+
+-- Evaluate expression
+map("n", "<leader>de", function()
+  require("dap").eval()
+end, { desc = "Debug: Evaluate expression" })
+
+-- Evaluate expression (prompt)
+map("n", "<leader>dE", function()
+  require("dap").eval(vim.fn.input "Expression: ")
+end, { desc = "Debug: Evaluate expression (prompt)" })
+
+-- Run to cursor
+map("n", "<leader>dg", function()
+  require("dap").run_to_cursor()
+end, { desc = "Debug: Run to cursor" })
+
+-- Go to line (without executing)
+map("n", "<leader>dj", function()
+  require("dap").goto_()
+end, { desc = "Debug: Go to line" })
+
+-- Show hover information
+map("n", "<leader>dh", function()
+  require("dap.ui.widgets").hover()
+end, { desc = "Debug: Hover" })
+
+-- Preview variable
+map("n", "<leader>dv", function()
+  require("dap.ui.widgets").preview()
+end, { desc = "Debug: Preview" })
+
+-- Show frames
+map("n", "<leader>df", function()
+  local widgets = require "dap.ui.widgets"
+  widgets.centered_float(widgets.frames)
+end, { desc = "Debug: Frames" })
+
+-- Show scopes
+map("n", "<leader>ds", function()
+  local widgets = require "dap.ui.widgets"
+  widgets.centered_float(widgets.scopes)
+end, { desc = "Debug: Scopes" })
+
+-- Clear all breakpoints
+map("n", "<leader>dx", function()
+  require("dap").clear_breakpoints()
+end, { desc = "Debug: Clear all breakpoints" })
+
+-- List breakpoints
+map("n", "<leader>dL", function()
+  require("dap").list_breakpoints()
+end, { desc = "Debug: List breakpoints" })
