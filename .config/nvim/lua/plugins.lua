@@ -933,51 +933,7 @@ return {
     },
     init = function()
       vim.g.rustaceanvim = {
-        -- Disable if you have issues
-        tools = {
-          hover_actions = {
-            auto_focus = false,
-          },
-          enable_nextest = false,
-          -- test_executor = "background"
-          -- test_executor = function(cmd:string, args:string[], cwd:string|nil, opts?: rustaceanvim.ExecutorOpts)
-          --   -- Add custom parameters like --show-output
-          --   local custom_args = vim.list_extend({}, args)
-          --   table.insert(custom_args, "--show-output")
-          --
-          --   -- Set up custom environment variables
-          --   local env = vim.tbl_extend("force", vim.fn.environ(), {
-          --     RUST_LOG = "debug",
-          --     RUST_BACKTRACE = "1",
-          --   })
-          --
-          --   -- Execute the command with custom args and env
-          --   vim.fn.jobstart({cmd, unpack(custom_args)}, {
-          --     cwd = cwd,
-          --     env = env,
-          --     on_stdout = function(_, data, _)
-          --       if data then
-          --         for _, line in ipairs(data) do
-          --           if line ~= "" then
-          --             print(line)
-          --           end
-          --         end
-          --       end
-          --     end,
-          --     on_stderr = function(_, data, _)
-          --       if data then
-          --         for _, line in ipairs(data) do
-          --           if line ~= "" then
-          --             vim.notify(line, vim.log.levels.ERROR)
-          --           end
-          --         end
-          --       end
-          --     end,
-          --   })
-          -- end
-        },
         server = {
-          -- on_attach = function(client, bufnr) end,
           default_settings = {
             ["rust-analyzer"] = {
               cargo = {
