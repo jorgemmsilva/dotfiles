@@ -8,6 +8,15 @@ return {
     lazy = false,
     opts = {
       dimInactive = false,
+      ---@diagnostic disable-next-line: unused-local
+      overrides = function(colors)
+        return {
+          -- better contrast when searching
+          Search = { fg = "#1F1F28", bg = "#FF9E3B", bold = true },
+          IncSearch = { fg = "#1F1F28", bg = "#E6C384", bold = true },
+          CurSearch = { fg = "#1F1F28", bg = "#FF5D62", bold = true },
+        }
+      end,
     },
     config = function(_, opts)
       require("kanagawa").setup(opts)
