@@ -824,7 +824,14 @@ return {
       -- dashboard = { enabled = true },
       explorer = { enabled = true },
       indent = { enabled = true, animate = { enabled = false } },
-      input = { enabled = true },
+      input = {
+        enabled = true,
+        win = {
+          relative = "cursor",
+          row = -3,
+          col = 0,
+        },
+      },
       picker = {
         enabled = true,
         win = {
