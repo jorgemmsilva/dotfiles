@@ -343,6 +343,12 @@ end, { desc = "Toggle line wrap" })
 
 -- use ESC to close floats
 map("n", "<esc>", function()
+  -- Close command-line window if open (q: or q/)
+  if vim.fn.getcmdwintype() ~= "" then
+    vim.cmd.quit()
+    return
+  end
+
   -- Collect floating windows first to avoid iterator invalidation
   local floating_wins = {}
   for _, win in ipairs(vim.api.nvim_list_wins()) do
