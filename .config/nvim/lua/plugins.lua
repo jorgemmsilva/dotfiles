@@ -97,6 +97,7 @@ return {
 
   {
     "folke/which-key.nvim",
+    lazy = false,
     keys = { "<leader>", "<c-w>", '"', "'", "`", "c", "v", "g" },
     cmd = "WhichKey",
     opts = function()
@@ -425,7 +426,13 @@ return {
       -- C-k: Toggle signature help (if signature.enabled = true)
       --
       -- See :h blink-cmp-config-keymap for defining your own keymap
-      keymap = { preset = "enter" },
+      keymap = {
+        preset = "enter",
+        ["<Tab>"] = { "select_next", "fallback" },
+        ["<S-Tab>"] = { "select_prev", "fallback" },
+        ["<C-j>"] = { "select_next", "fallback" },
+        ["<c-k>"] = { "select_prev", "fallback" },
+      },
 
       appearance = {
         -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
@@ -481,9 +488,10 @@ return {
   ------------------------------------------------------------------
 
   -- { "powerman/vim-plugin-AnsiEsc", lazy = false },
+  -- { "meznaric/key-analyzer.nvim", opts = {}, lazy = false },
 
   {
-    "esmuellert/vscode-diff.nvim",
+    "esmuellert/codediff.nvim",
     dependencies = { "MunifTanjim/nui.nvim" },
     cmd = "CodeDiff",
   },
@@ -627,20 +635,6 @@ return {
       suppressed_dirs = { "~/Downloads", "/" },
       -- log_level = 'debug',
     },
-  },
-
-  {
-    "leath-dub/snipe.nvim",
-    keys = {
-      {
-        "gb",
-        function()
-          require("snipe").open_buffer_menu()
-        end,
-        desc = "Open Snipe buffer menu",
-      },
-    },
-    opts = {},
   },
 
   {
@@ -816,79 +810,82 @@ return {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-      -- bigfile = { enabled = true },
-      -- dashboard = { enabled = true },
-      explorer = { enabled = true },
-      indent = { enabled = true, animate = { enabled = false } },
-      input = {
-        enabled = true,
-        win = {
-          relative = "cursor",
-          row = -3,
-          col = 0,
+    opts = function()
+      vim.g.snacks_animate = false
+      return {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+        -- bigfile = { enabled = true },
+        -- dashboard = { enabled = true },
+        explorer = { enabled = true },
+        indent = { enabled = true, animate = { enabled = false } },
+        input = {
+          enabled = true,
+          win = {
+            relative = "cursor",
+            row = -3,
+            col = 0,
+          },
         },
-      },
-      picker = {
-        enabled = true,
-        win = {
-          input = {
-            keys = {
-              ["<Up>"] = { "history_back", mode = { "i", "n" } },
-              ["<Down>"] = { "history_forward", mode = { "i", "n" } },
+        picker = {
+          enabled = true,
+          win = {
+            input = {
+              keys = {
+                ["<Up>"] = { "history_back", mode = { "i", "n" } },
+                ["<Down>"] = { "history_forward", mode = { "i", "n" } },
+              },
             },
           },
-        },
-        formatters = {
-          file = {
-            filename_first = true, -- display filename before the file path
-            --- * left: truncate the beginning of the path
-            --- * center: truncate the middle of the path
-            --- * right: truncate the end of the path
-            ---@type "left"|"center"|"right"
-            truncate = "center",
-            min_width = 100, -- minimum length of the truncated path
-            filename_only = false, -- only show the filename
-            icon_width = 2, -- width of the icon (in characters)
-            git_status_hl = true, -- use the git status highlight group for the filename
-          },
-        },
-        previewers = {
-          diff = {
-            -- fancy: Snacks fancy diff (borders, multi-column line numbers, syntax highlighting)
-            -- syntax: Neovim's built-in diff syntax highlighting
-            -- terminal: external command (git's pager for git commands, `cmd` for other diffs)
-            style = "fancy", ---@type "fancy"|"syntax"|"terminal"
-            cmd = { "delta" }, -- example for using `delta` as the external diff command
-            ---@type vim.wo?|{} window options for the fancy diff preview window
-            wo = {
-              breakindent = true,
-              wrap = true,
-              linebreak = true,
-              showbreak = "",
+          formatters = {
+            file = {
+              filename_first = true, -- display filename before the file path
+              --- * left: truncate the beginning of the path
+              --- * center: truncate the middle of the path
+              --- * right: truncate the end of the path
+              ---@type "left"|"center"|"right"
+              truncate = "center",
+              min_width = 100, -- minimum length of the truncated path
+              filename_only = false, -- only show the filename
+              icon_width = 2, -- width of the icon (in characters)
+              git_status_hl = true, -- use the git status highlight group for the filename
             },
           },
-          git = {
-            args = {}, -- additional arguments passed to the git command. Useful to set pager options usin `-c ...`
+          previewers = {
+            diff = {
+              -- fancy: Snacks fancy diff (borders, multi-column line numbers, syntax highlighting)
+              -- syntax: Neovim's built-in diff syntax highlighting
+              -- terminal: external command (git's pager for git commands, `cmd` for other diffs)
+              style = "fancy", ---@type "fancy"|"syntax"|"terminal"
+              cmd = { "delta" }, -- example for using `delta` as the external diff command
+              ---@type vim.wo?|{} window options for the fancy diff preview window
+              wo = {
+                breakindent = true,
+                wrap = true,
+                linebreak = true,
+                showbreak = "",
+              },
+            },
+            git = {
+              args = {}, -- additional arguments passed to the git command. Useful to set pager options usin `-c ...`
+            },
+            file = {
+              max_size = 1024 * 1024, -- 1MB
+              max_line_length = 500, -- max line length
+              ft = nil, ---@type string? filetype for highlighting. Use `nil` for auto detect
+            },
+            man_pager = nil, ---@type string? MANPAGER env to use for `man` preview
           },
-          file = {
-            max_size = 1024 * 1024, -- 1MB
-            max_line_length = 500, -- max line length
-            ft = nil, ---@type string? filetype for highlighting. Use `nil` for auto detect
-          },
-          man_pager = nil, ---@type string? MANPAGER env to use for `man` preview
         },
-      },
-      notifier = { enabled = true },
-      quickfile = { enabled = true },
-      scope = { enabled = true },
-      -- scroll = { enabled = true },
-      statuscolumn = { enabled = true },
-      words = { enabled = true },
-    },
+        notifier = { enabled = true },
+        quickfile = { enabled = true },
+        scope = { enabled = true },
+        -- scroll = { enabled = true },
+        statuscolumn = { enabled = true },
+        words = { enabled = true },
+      }
+    end,
   },
 
   {
@@ -901,6 +898,10 @@ return {
       },
       frecency = {
         enabled = true,
+      },
+      keymaps = {
+        move_up = { "<Up>", "<C-p>", "<C-k>" },
+        move_down = { "<Down>", "<C-n>", "<C-j>" },
       },
     },
     keys = {

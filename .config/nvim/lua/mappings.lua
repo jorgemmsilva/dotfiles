@@ -262,6 +262,10 @@ end, { desc = "Get file:line:line range" })
 --------------------------------------------------------------------------------
 --                          Buffers
 --------------------------------------------------------------------------------
+map("n", "<C-b>", function()
+  require("snacks").picker.buffers()
+end, { desc = "Open buffer picker" })
+
 map("n", "<leader>b", "<cmd>enew<CR>", { desc = "buffer new" })
 map("n", "<leader><S-x>", function()
   local visible_buffers = {}

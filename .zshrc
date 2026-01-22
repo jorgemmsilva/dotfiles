@@ -86,3 +86,10 @@ eval "$(fasd --init auto)"
 # needs to be at the end
 eval "$(starship init zsh)"
 
+
+# bun completions
+[ -s "/Users/jorge/.bun/_bun" ] && source "/Users/jorge/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
