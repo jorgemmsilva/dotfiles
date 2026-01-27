@@ -781,14 +781,6 @@ return {
 
   -- gives highlights for motions
   {
-    "unblevable/quick-scope",
-    lazy = false,
-    init = function()
-      vim.g.qs_highlight_on_keys = { "f", "F", "t", "T" }
-    end,
-  },
-
-  {
     "nvim-mini/mini.nvim",
     lazy = false,
     version = "*",
@@ -810,6 +802,22 @@ return {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
+    keys = {
+      {
+        "<C-->",
+        function()
+          Snacks.picker.files()
+        end,
+        desc = "Find Files",
+      },
+      {
+        "-",
+        function()
+          Snacks.picker.git_files()
+        end,
+        desc = "Find Git Files",
+      },
+    },
     opts = function()
       vim.g.snacks_animate = false
       return {
@@ -886,40 +894,6 @@ return {
         words = { enabled = true },
       }
     end,
-  },
-
-  {
-    "dmtrKovalenko/fff.nvim",
-    build = "cargo build --release",
-    lazy = false,
-    opts = {
-      layout = {
-        prompt_position = "top",
-      },
-      frecency = {
-        enabled = true,
-      },
-      keymaps = {
-        move_up = { "<Up>", "<C-p>", "<C-k>" },
-        move_down = { "<Down>", "<C-n>", "<C-j>" },
-      },
-    },
-    keys = {
-      {
-        "<C-->",
-        function()
-          require("fff").find_files() -- or find_in_git_root() if you only want git files
-        end,
-        desc = "Open file picker",
-      },
-      {
-        "-",
-        function()
-          require("fff").find_in_git_root()
-        end,
-        desc = "Open file picker",
-      },
-    },
   },
 
   ------------------------------------------------------------------
