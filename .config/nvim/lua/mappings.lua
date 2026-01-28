@@ -22,11 +22,21 @@ map("n", "<C-S-k>", "20k", { desc = "move up 20 lines" })
 map("n", "<C-S-l>", "20zl", { desc = "scroll 20 chars to the right" })
 map("n", "<C-S-h>", "20zh", { desc = "scroll 20 chars to the left" })
 
--- window navigation
+-- window navigation (in floating windows, act as j/k for menu navigation)
 map("n", "<C-h>", "<C-w>h", { desc = "switch window left" })
 map("n", "<C-l>", "<C-w>l", { desc = "switch window right" })
-map("n", "<C-j>", "<C-w>j", { desc = "switch window down" })
-map("n", "<C-k>", "<C-w>k", { desc = "switch window up" })
+map("n", "<C-j>", function()
+  if vim.api.nvim_win_get_config(0).relative ~= "" then
+    return "j"
+  end
+  return "<C-w>j"
+end, { expr = true, desc = "switch window down / menu down" })
+map("n", "<C-k>", function()
+  if vim.api.nvim_win_get_config(0).relative ~= "" then
+    return "k"
+  end
+  return "<C-w>k"
+end, { expr = true, desc = "switch window up / menu up" })
 
 -- window resizing
 -- map("n", "<C-Left>", "5<C-w><", { desc = "decrease window width" })
