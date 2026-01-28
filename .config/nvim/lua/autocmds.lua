@@ -58,6 +58,17 @@ vim.keymap.set("n", "<leader>rr", ToggleAutoRefresh, {
 })
 
 --------------
+-- Set git branch for terminal buffers (so statusline shows it)
+autocmd("TermOpen", {
+  callback = function()
+    local head = vim.trim(vim.fn.system "git rev-parse --abbrev-ref HEAD 2>/dev/null")
+    if vim.v.shell_error == 0 then
+      vim.b.gitsigns_head = head
+    end
+  end,
+})
+
+--------------
 -- yankring
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
