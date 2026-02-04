@@ -91,6 +91,14 @@ return {
           end
           require("snacks").picker.grep { cwd = path }
         end, { buffer = bufnr, noremap = true, silent = true, desc = "Live grep in directory" })
+
+        -- press gx to open file with system default application
+        vim.keymap.set("n", "gx", function()
+          local node = api.tree.get_node_under_cursor()
+          if node and node.absolute_path then
+            vim.fn.system { "open", node.absolute_path }
+          end
+        end, { buffer = bufnr, noremap = true, silent = true, desc = "Open with system app" })
       end,
     },
   },
