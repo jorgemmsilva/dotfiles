@@ -337,6 +337,9 @@ map("n", "<leader>u", "<cmd>UndotreeToggle<CR>")
 map({ "n", "i" }, "<C-s>", "<Esc>:w<CR>", { desc = "save file" })
 map({ "n", "i" }, "<C-S-s>", "<Esc>:wa<CR>", { desc = "Save all buffers" })
 
+map({ "i", "t" }, "<C-BS>", "<C-w>", { desc = "delete previous word" })
+map({ "i", "t" }, "<C-z>", "<C-o>u", { desc = "undo" })
+
 -- map("n", "<C-c>", "<cmd>%y+<CR>", { desc = "general copy whole file" })
 
 map({ "n", "x" }, "<leader>fm", function()
