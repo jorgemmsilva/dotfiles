@@ -821,7 +821,7 @@ return {
       {
         "-",
         function()
-          Snacks.picker.git_files()
+          Snacks.picker.git_files { untracked = true }
         end,
         desc = "Find Git Files",
       },
@@ -966,6 +966,10 @@ return {
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require("neotest").setup {
+        output = {
+          enabled = true,
+          open_on_run = true,
+        },
         adapters = {
           require "rustaceanvim.neotest",
         },
