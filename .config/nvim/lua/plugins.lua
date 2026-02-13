@@ -15,6 +15,7 @@ return {
           Search = { fg = "#1F1F28", bg = "#FF9E3B", bold = true },
           IncSearch = { fg = "#1F1F28", bg = "#E6C384", bold = true },
           CurSearch = { fg = "#1F1F28", bg = "#FF5D62", bold = true },
+          Visual = { bg = "#625e7a" },
         }
       end,
     },
@@ -908,16 +909,50 @@ return {
   --- MARKDOWN
   ------------------------------------------------------------------
 
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    lazy = false,
-    dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-    -- dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" }, -- if you prefer nvim-web-devicons
-    ---@module 'render-markdown'
-    ---@type render.md.UserConfig
-    opts = {},
-  },
+  -- {
+  --   "MeanderingProgrammer/render-markdown.nvim",
+  --   lazy = false,
+  --   dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim", "3rd/image.nvim" },
+  --   ---@module 'render-markdown'
+  --   ---@type render.md.UserConfig
+  --   opts = {},
+  -- },
+  --
+  -- -- NOTE: the markdown images require the following dependencies:
+  -- -- - brew install imagemagick luarocks pngpaste librsvg ghostscript
+  -- -- - luarocks --local install magick
+  -- {
+  --   "3rd/image.nvim",
+  --   opts = {
+  --     backend = "kitty",
+  --     integrations = {
+  --       markdown = {
+  --         enabled = true,
+  --         clear_in_insert_mode = true,
+  --         only_render_image_at_cursor = true,
+  --       },
+  --     },
+  --     max_width = 100,
+  --     max_height = 12,
+  --     max_height_window_percentage = math.huge,
+  --     max_width_window_percentage = math.huge,
+  --     window_overlap_clear_enabled = true,
+  --     window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs" },
+  --   },
+  -- },
+  --
+  -- {
+  --   "HakonHarnes/img-clip.nvim",
+  --   event = "VeryLazy",
+  --   opts = {
+  --     -- add options here
+  --     -- or leave it empty to use the default settings
+  --   },
+  --   keys = {
+  --     -- suggested keymap
+  --     { "<leader>m", "<cmd>PasteImage<cr>", desc = "Paste image from system clipboard" },
+  --   },
+  -- },
 
   ------------------------------------------------------------------
   --- RUST
