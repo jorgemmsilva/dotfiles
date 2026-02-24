@@ -19,3 +19,7 @@
 
 [merge]
     conflictStyle = zdiff3
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
