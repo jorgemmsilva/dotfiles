@@ -70,22 +70,8 @@ eval "$(direnv hook zsh)"
 # setup fasd
 eval "$(fasd --init auto)"
 
-# auto complete
-# export CARAPACE_BRIDGES='fish,bash,inshellisense' # optional
-# zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
-# source <(carapace _carapace)
-
-
-# autoload -U compinit
-# compinit -i
-
-
-
-#####################################
-#
-# needs to be at the end
-eval "$(starship init zsh)"
-
+# thefuck
+eval $(thefuck --alias F)
 
 # bun completions
 [ -s "/Users/jorge/.bun/_bun" ] && source "/Users/jorge/.bun/_bun"
@@ -93,3 +79,9 @@ eval "$(starship init zsh)"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+
+#####################################
+#
+# needs to be at the end
+eval "$(starship init zsh)"

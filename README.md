@@ -18,4 +18,4 @@ https://github.com/junegunn/fzf
 
 https://neovim.io/
 
-https://carapace-sh.github.io/
+https://github.com/nvbn/thefuck
