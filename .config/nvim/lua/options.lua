@@ -72,5 +72,7 @@ vim.opt.title = true
 vim.opt.titlelen = 0 -- do not shorten
 vim.opt.titlestring = 'nvim %{expand("%:p")}'
 
+vim.o.termguicolors = true
+
 -- allow <C-o> to go to a closed buffer
 -- vim.opt.jumpoptions:remove "clean"
