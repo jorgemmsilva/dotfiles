@@ -14,6 +14,9 @@ export RUST_LOG="common=debug,shared=debug,synd_batch_sequencer=debug,synd_block
 export RUST_BACKTRACE=1
 export PATH=$PATH:$HOME/.cargo/bin
 
+# BUN
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
 
 # custom binaries
 export PATH=$PATH:$HOME/bin

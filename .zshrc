@@ -1,3 +1,7 @@
+###############################
+# oh-my-zsh setup
+###############################
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -23,9 +27,11 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-######### misc aliases
+###############################
+# Aliases
+###############################
 
-# lsd
+# ls
 alias ls='lsd'
 alias l='ls -la'
 alias la='ls -a'
@@ -41,6 +47,10 @@ alias ....="cd ../.."
 alias ......="cd ../../.."
 alias ........="cd ../../../.."
 
+# misc aliases
+alias nv='nvim'
+alias c='code'
+
 # git aliases
 alias gs="git status"
 alias gp="git pull"
@@ -53,33 +63,31 @@ alias gcleantags="git tag -l | xargs git tag -d && git fetch -t"
 alias gcleanup="git fetch --prune --prune-tags && git branch -vv | grep 'origin/.*: gone]' | awk '{print $1}' | xargs git branch -D"
 alias gl="git log --oneline --decorate --all --graph"
 
-
-# FASD alias
-alias v='f -e nvim' # quick opening files with neo vim
-alias nv='nvim'
-
-# VScode alias
-alias c='code'
-
 # RUST
 alias cargo-features='function _cargo_features() { cargo metadata --format-version=1 | jq --arg pkg "$1" '"'"'.packages[] | select(.name == $pkg) | .features'"'"'; }; _cargo_features'
+alias clippy='cargo clippy --workspace --all-targets --all-features --fix --allow-dirty --allow-staged'
 
-# setup direnv
-eval "$(direnv hook zsh)"
 
-# setup fasd
-eval "$(fasd --init auto)"
-
-# thefuck
-eval $(thefuck --alias F)
+###############################
+# MISC
+###############################
 
 # bun completions
 [ -s "/Users/jorge/.bun/_bun" ] && source "/Users/jorge/.bun/_bun"
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
 
+###############################
+# Evals
+###############################
+
+# direnv
+eval "$(direnv hook zsh)"
+
+# zoxide
+eval "$(zoxide init zsh)"
+
+# thefuck
+eval "$(thefuck --alias F)"
 
 #####################################
 #
