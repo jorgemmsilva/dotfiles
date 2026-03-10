@@ -22,9 +22,3 @@ https://neovim.io/
 
 https://github.com/nvbn/thefuck
 
-https://github.com/joshmedeski/sesh
-
-to add `sesh` zsh completion:
-```bash
-sesh completion zsh > /opt/homebrew/share/zsh/site-functions/_sesh
-```
