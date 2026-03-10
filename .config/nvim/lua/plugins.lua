@@ -16,6 +16,8 @@ return {
           IncSearch = { fg = "#1F1F28", bg = "#E6C384", bold = true },
           CurSearch = { fg = "#1F1F28", bg = "#FF5D62", bold = true },
           Visual = { bg = "#625e7a" },
+          WinSeparator = { fg = "#7E9CD8" },
+          -- WinSeparator = { fg = "#FF9E3B" },
         }
       end,
     },

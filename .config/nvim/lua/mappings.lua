@@ -274,8 +274,16 @@ end, { desc = "Get file:line:line range" })
 --------------------------------------------------------------------------------
 --                          Buffers
 --------------------------------------------------------------------------------
-map("n", "<C-b>", function()
-  require("snacks").picker.buffers()
+map("n", "gb", function()
+  require("snacks").picker.buffers {
+    win = {
+      input = {
+        keys = {
+          ["<c-d>"] = { "bufdelete", mode = { "n", "i" } },
+        },
+      },
+    },
+  }
 end, { desc = "Open buffer picker" })
 
 map("n", "<leader>b", "<cmd>enew<CR>", { desc = "buffer new" })
