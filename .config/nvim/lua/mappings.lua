@@ -174,6 +174,18 @@ map("n", "<C-f>", function()
   }
 end, { noremap = true, silent = true, desc = "snacks live grep" })
 
+map("n", "<leader>ff", function()
+  local dir = vim.fn.expand "%:p:h"
+  local root =
+    vim.fs.find({ "Cargo.toml", "package.json", "go.mod", "pyproject.toml", ".git" }, { path = dir, upward = true })[1]
+  local cwd = root and vim.fn.fnamemodify(root, ":h") or dir
+  require("snacks").picker.grep { cwd = cwd }
+end, { desc = "Grep from nearest project root" })
+
+map("n", "<leader>fF", function()
+  require("snacks").picker.grep { cwd = vim.fn.expand "%:p:h" }
+end, { desc = "Grep in current file's directory" })
+
 -- Additional snacks picker commands (commented out for reference):
 -- map("n", "<leader>fw", function() require("snacks").picker.grep() end, { desc = "snacks live grep" })
 -- map("n", "<leader>fb", function() require("snacks").picker.buffers() end, { desc = "snacks find buffers" })
