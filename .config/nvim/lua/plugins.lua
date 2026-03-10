@@ -1087,6 +1087,31 @@ return {
         },
       },
     },
+    config = function(_, opts)
+      require("sidekick").setup(opts)
+
+      -- Width-preserving toggle: saves split width before hiding, sets it on
+      -- the terminal opts so open_win creates the window at the right size.
+      local function sidekick_toggle()
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+          if vim.w[win].sidekick_cli then
+            vim.g._sidekick_width = vim.api.nvim_win_get_width(win)
+            break
+          end
+        end
+        if vim.g._sidekick_width then
+          for _, t in ipairs(require("sidekick.cli.terminal").sessions()) do ---@cast t sidekick.cli.Terminal
+            if t.opts and t.opts.split then
+              t.opts.split.width = vim.g._sidekick_width
+            end
+          end
+        end
+        require("sidekick.cli").toggle()
+      end
+
+      vim.keymap.set({ "n", "t", "i", "x" }, "<c-a>", sidekick_toggle, { desc = "Sidekick Toggle" })
+      vim.keymap.set("n", "<leader>aa", sidekick_toggle, { desc = "Sidekick Toggle CLI" })
+    end,
     keys = {
       {
         "<tab>",
@@ -1098,21 +1123,6 @@ return {
         end,
         expr = true,
         desc = "Goto/Apply Next Edit Suggestion",
-      },
-      {
-        "<c-a>",
-        function()
-          require("sidekick.cli").toggle()
-        end,
-        desc = "Sidekick Toggle",
-        mode = { "n", "t", "i", "x" },
-      },
-      {
-        "<leader>aa",
-        function()
-          require("sidekick.cli").toggle()
-        end,
-        desc = "Sidekick Toggle CLI",
       },
       {
         "<leader>as",
