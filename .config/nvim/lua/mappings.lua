@@ -40,12 +40,6 @@ map("n", "<C-S-h>", "20zh", { desc = "scroll 20 chars to the left" })
 --   return "<C-w>k"
 -- end, { expr = true, desc = "switch window up / menu up" })
 
--- window resizing
--- map("n", "<C-Left>", "5<C-w><", { desc = "decrease window width" })
--- map("n", "<C-Right>", "5<C-w>>", { desc = "increase window width" })
--- map("n", "<C-S-<>", "3<C-w>-", { desc = "decrease window height" })
--- map("n", "<C-S->>", "3<C-w>+", { desc = "increase window height" })
-
 -- keep cursor in the middle of the screen while scrolling
 map("n", "<C-u>", "<C-u>zz")
 

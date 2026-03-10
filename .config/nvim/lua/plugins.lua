@@ -498,7 +498,65 @@ return {
   --- Navigation
   ------------------------------------------------------------------
 
-  { "christoomey/vim-tmux-navigator", lazy = false },
+  {
+    "mrjones2014/smart-splits.nvim",
+    lazy = false,
+    opts = {},
+    keys = {
+      {
+        "<C-h>",
+        function()
+          require("smart-splits").move_cursor_left()
+        end,
+        desc = "Move to left split/pane",
+      },
+      {
+        "<C-j>",
+        function()
+          require("smart-splits").move_cursor_down()
+        end,
+        desc = "Move to below split/pane",
+      },
+      {
+        "<C-k>",
+        function()
+          require("smart-splits").move_cursor_up()
+        end,
+        desc = "Move to above split/pane",
+      },
+      {
+        "<C-l>",
+        function()
+          require("smart-splits").move_cursor_right()
+        end,
+        desc = "Move to right split/pane",
+      },
+      {
+        "<leader>r",
+        function()
+          local ss = require "smart-splits"
+          vim.notify("RESIZE: h/j/k/l to resize, Esc to exit", vim.log.levels.INFO)
+          while true do
+            local key = vim.fn.getcharstr()
+            if key == "h" then
+              ss.resize_left()
+            elseif key == "l" then
+              ss.resize_right()
+            elseif key == "j" then
+              ss.resize_down()
+            elseif key == "k" then
+              ss.resize_up()
+            else
+              break
+            end
+            vim.cmd "redraw"
+          end
+          vim.notify("", vim.log.levels.INFO)
+        end,
+        desc = "Resize mode (hjkl, Esc to exit)",
+      },
+    },
+  },
 
   ------------------------------------------------------------------
   --- MISC
