@@ -492,6 +492,23 @@ return {
       -- cmdline = { enabled = false },
     },
     opts_extend = { "sources.default" },
+    config = function(_, opts)
+      require("blink.cmp").setup(opts)
+
+      -- Force "insert" behavior: clamp text edit end to cursor so completions
+      -- don't delete the word in front of the cursor.
+      local text_edits = require "blink.cmp.lib.text_edits"
+      local context = require "blink.cmp.completion.trigger.context"
+      local original_get_from_item = text_edits.get_from_item
+      text_edits.get_from_item = function(item)
+        local edit = original_get_from_item(item)
+        local cursor = context.get_cursor()
+        if edit.range["end"].line == cursor[1] - 1 and edit.range["end"].character > cursor[2] then
+          edit.range["end"].character = cursor[2]
+        end
+        return edit
+      end
+    end,
   },
 
   ------------------------------------------------------------------
