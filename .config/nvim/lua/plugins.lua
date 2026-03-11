@@ -535,17 +535,22 @@ return {
         "<leader>r",
         function()
           local ss = require "smart-splits"
+          local function try_resize(fn, fallback_cmd)
+            if not pcall(fn) then
+              vim.cmd(fallback_cmd)
+            end
+          end
           vim.notify("RESIZE: h/j/k/l to resize, Esc to exit", vim.log.levels.INFO)
           while true do
             local key = vim.fn.getcharstr()
             if key == "h" then
-              ss.resize_left()
+              try_resize(ss.resize_left, "vertical resize -2")
             elseif key == "l" then
-              ss.resize_right()
+              try_resize(ss.resize_right, "vertical resize +2")
             elseif key == "j" then
-              ss.resize_down()
+              try_resize(ss.resize_down, "resize +2")
             elseif key == "k" then
-              ss.resize_up()
+              try_resize(ss.resize_up, "resize -2")
             else
               break
             end
