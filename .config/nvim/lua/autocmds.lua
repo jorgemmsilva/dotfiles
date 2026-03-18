@@ -69,6 +69,46 @@ autocmd("TermOpen", {
 })
 
 --------------
+-- auto-suspend LSP after 15m of lost focus, restart on refocus
+local lsp_suspend_timer = nil
+local lsp_suspended = false
+local LSP_TIMEOUT_MS = 15 * 60 * 1000
+
+autocmd("FocusLost", {
+  callback = function()
+    if lsp_suspend_timer then
+      lsp_suspend_timer:stop()
+    end
+    lsp_suspend_timer = vim.defer_fn(function()
+      local clients = vim.lsp.get_clients()
+      if #clients > 0 then
+        vim.lsp.stop_client(clients)
+        lsp_suspended = true
+      end
+      lsp_suspend_timer = nil
+    end, LSP_TIMEOUT_MS)
+  end,
+})
+
+autocmd("FocusGained", {
+  callback = function()
+    if lsp_suspend_timer then
+      lsp_suspend_timer:stop()
+      lsp_suspend_timer = nil
+    end
+    if lsp_suspended then
+      lsp_suspended = false
+      for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        if vim.bo[buf].filetype ~= "" then
+          vim.api.nvim_exec_autocmds("FileType", { buffer = buf })
+        end
+      end
+    end
+  end,
+})
+
+--------------
 -- yankring
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
