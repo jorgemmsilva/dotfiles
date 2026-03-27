@@ -331,29 +331,16 @@ return {
     },
   },
 
-  -- TODO try to rm this and use the vscode-diff instead
-  { "sindrets/diffview.nvim", lazy = false },
-
   {
     "NeogitOrg/neogit",
-    lazy = false,
+    lazy = true,
     dependencies = {
       "nvim-lua/plenary.nvim", -- required
-      "sindrets/diffview.nvim", -- optional - Diff integration
-
-      -- Only one of these is needed.
-      -- "nvim-telescope/telescope.nvim", -- optional
-      -- "ibhagwan/fzf-lua",              -- optional
-      -- "echasnovski/mini.pick", -- optional
+      "esmuellert/codediff.nvim", -- optional
       "folke/snacks.nvim", -- optional
     },
-
     opts = {
-      disable_commit_confirmation = true,
-      integrations = {
-        diffview = true,
-        snacks = true,
-      },
+      treesitter_diff_highlight = true,
     },
   },
 
