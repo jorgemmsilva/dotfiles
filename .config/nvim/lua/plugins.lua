@@ -250,6 +250,54 @@ return {
     },
   },
 
+  {
+    "nvim-treesitter/nvim-treesitter",
+    lazy = false,
+    branch = "main",
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+    build = ":TSUpdate",
+    opts = {
+      ensure_installed = { "lua", "luadoc", "printf", "vim", "vimdoc", "nu", "typescript" },
+
+      highlight = {
+        enable = true,
+        use_languagetree = true,
+      },
+
+      indent = { enable = true },
+    },
+    config = function()
+      require("nvim-treesitter").install {
+        "lua",
+        "luadoc",
+        "printf",
+        "vim",
+        "vimdoc",
+        "nu",
+        "typescript",
+      }
+
+      vim.o.foldlevelstart = 99
+
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function()
+          pcall(vim.treesitter.start)
+          vim.wo[0][0].foldmethod = "expr"
+          vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+          vim.wo[0][0].foldlevel = 99
+          vim.wo[0][0].foldenable = true
+        end,
+      })
+    end,
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {},
+  },
+
   ------------------------------------------------------------------
   --- Git stuff
   ------------------------------------------------------------------
@@ -578,43 +626,6 @@ return {
     "esmuellert/codediff.nvim",
     dependencies = { "MunifTanjim/nui.nvim" },
     cmd = "CodeDiff",
-  },
-
-  {
-    "nvim-treesitter/nvim-treesitter",
-    event = { "BufReadPost", "BufNewFile" },
-    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
-    build = ":TSUpdate",
-    opts = {
-      ensure_installed = { "lua", "luadoc", "printf", "vim", "vimdoc", "nu" },
-
-      highlight = {
-        enable = true,
-        use_languagetree = true,
-      },
-
-      indent = { enable = true },
-    },
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
-
-      -- Set up folding via FileType autocmd (after filetype is detected)
-      vim.api.nvim_create_autocmd("FileType", {
-        callback = function()
-          vim.opt_local.foldmethod = "expr"
-          vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-          vim.opt_local.foldlevel = 99
-          vim.opt_local.foldlevelstart = 99
-          vim.opt_local.foldenable = true
-        end,
-      })
-    end,
-  },
-
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    event = { "BufReadPost", "BufNewFile" },
-    opts = {},
   },
 
   {

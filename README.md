@@ -22,3 +22,7 @@ https://neovim.io/
 
 https://github.com/nvbn/thefuck
 
+
+```shell
+cargo install tree-sitter-cli
+```
