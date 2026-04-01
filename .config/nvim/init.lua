@@ -11,5 +11,4 @@ require "cmds"
 require "mappings"
 -- end)
 
--- TODO uncomment once v0.12 is out
--- vim.cmd "packadd nvim.undotree"
+vim.cmd "packadd nvim.undotree"

@@ -348,7 +348,7 @@ map("n", "<leader>=c", require("custom.pinned").clear, { desc = "Clear pinned fi
 --                          MISC
 --------------------------------------------------------------------------------
 
-map("n", "<leader>u", "<cmd>UndotreeToggle<CR>")
+map("n", "<leader>u", "<cmd>Undotree<CR>")
 
 map({ "n", "i" }, "<C-s>", "<Esc>:w<CR>", { desc = "save file" })
 map({ "n", "i" }, "<C-S-s>", "<Esc>:wa<CR>", { desc = "Save all buffers" })
