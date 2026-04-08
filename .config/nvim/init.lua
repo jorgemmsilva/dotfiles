@@ -1,4 +1,3 @@
--- Make sure to setup options like `mapleader` and `maplocalleader` before loading lazy
 require "options"
 
 require "config.lazy"
@@ -6,9 +5,5 @@ require "config.lazy"
 require "filetypes"
 require "autocmds"
 require "cmds"
-
--- vim.schedule(function()
 require "mappings"
--- end)
-
-vim.cmd "packadd nvim.undotree"
+require "nvim_custom"

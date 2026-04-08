@@ -535,6 +535,8 @@ return {
       local text_edits = require "blink.cmp.lib.text_edits"
       local context = require "blink.cmp.completion.trigger.context"
       local original_get_from_item = text_edits.get_from_item
+
+      ---@diagnostic disable-next-line: duplicate-set-field
       text_edits.get_from_item = function(item)
         local edit = original_get_from_item(item)
         local cursor = context.get_cursor()
