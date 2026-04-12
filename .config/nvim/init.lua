@@ -6,4 +6,6 @@ require "filetypes"
 require "autocmds"
 require "cmds"
 require "mappings"
-require "nvim_custom"
+
+-- custom plugins
+require("custom.autosession").setup()

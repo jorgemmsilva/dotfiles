@@ -77,3 +77,14 @@ vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,
 
 -- allow <C-o> to go to a closed buffer
 -- vim.opt.jumpoptions:remove "clean"
+
+-- nvim features
+--
+vim.cmd "packadd nvim.undotree"
+
+require("vim._core.ui2").enable {
+  enable = true, -- Whether to enable or disable the UI.
+  msg = {
+    targets = "msg",
+  },
+}
