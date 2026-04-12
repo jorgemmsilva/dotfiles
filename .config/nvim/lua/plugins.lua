@@ -774,86 +774,86 @@ return {
     },
   },
 
-  {
-    "folke/trouble.nvim",
-    -- optional = true,
-    -- specs = {
-    --   "folke/snacks.nvim",
-    --   opts = function(_, opts)
-    --     return vim.tbl_deep_extend("force", opts or {}, {
-    --       picker = {
-    --         actions = require("trouble.sources.snacks").actions,
-    --         win = {
-    --           input = {
-    --             keys = {
-    --               ["<c-t>"] = {
-    --                 "trouble_open",
-    --                 mode = { "n", "i" },
-    --               },
-    --             },
-    --           },
-    --         },
-    --       },
-    --     })
-    --   end,
-    -- },
-    --
-    opts = {},
-    cmd = "Trouble",
-    keys = {
-      {
-        "<leader>tx",
-        "<cmd>Trouble diagnostics toggle<cr>",
-        desc = "Diagnostics (Trouble)",
-      },
-      {
-        "<leader>tX",
-        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-        desc = "Buffer Diagnostics (Trouble)",
-      },
-      {
-        "<leader>cs",
-        "<cmd>Trouble symbols toggle focus=false<cr>",
-        desc = "Symbols (Trouble)",
-      },
-      {
-        "<leader>cl",
-        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-        desc = "LSP Definitions / references / ... (Trouble)",
-      },
-      {
-        "<leader>tL",
-        "<cmd>Trouble loclist toggle<cr>",
-        desc = "Location List (Trouble)",
-      },
-      {
-        "<leader>tQ",
-        "<cmd>Trouble qflist toggle<cr>",
-        desc = "Quickfix List (Trouble)",
-      },
-      {
-        "<leader>tD",
-        "<cmd>Trouble todo filter = {tag = {TODO,FIX,FIXME}}<cr>",
-        desc = "TODO List (Trouble)",
-      },
-      {
-        "<leader>j",
-        function()
-          ---@diagnostic disable-next-line: missing-parameter, missing-fields
-          require("trouble").next { skip_groups = true, jump = true }
-        end,
-        desc = "Jump to next location",
-      },
-      {
-        "<leader>k",
-        function()
-          ---@diagnostic disable-next-line: missing-parameter, missing-fields
-          require("trouble").prev { skip_groups = true, jump = true }
-        end,
-        desc = "Jump to previous location",
-      },
-    },
-  },
+  -- {
+  --   "folke/trouble.nvim",
+  --   -- optional = true,
+  --   -- specs = {
+  --   --   "folke/snacks.nvim",
+  --   --   opts = function(_, opts)
+  --   --     return vim.tbl_deep_extend("force", opts or {}, {
+  --   --       picker = {
+  --   --         actions = require("trouble.sources.snacks").actions,
+  --   --         win = {
+  --   --           input = {
+  --   --             keys = {
+  --   --               ["<c-t>"] = {
+  --   --                 "trouble_open",
+  --   --                 mode = { "n", "i" },
+  --   --               },
+  --   --             },
+  --   --           },
+  --   --         },
+  --   --       },
+  --   --     })
+  --   --   end,
+  --   -- },
+  --   --
+  --   opts = {},
+  --   cmd = "Trouble",
+  --   keys = {
+  --     {
+  --       "<leader>tx",
+  --       "<cmd>Trouble diagnostics toggle<cr>",
+  --       desc = "Diagnostics (Trouble)",
+  --     },
+  --     {
+  --       "<leader>tX",
+  --       "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+  --       desc = "Buffer Diagnostics (Trouble)",
+  --     },
+  --     {
+  --       "<leader>cs",
+  --       "<cmd>Trouble symbols toggle focus=false<cr>",
+  --       desc = "Symbols (Trouble)",
+  --     },
+  --     {
+  --       "<leader>cl",
+  --       "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+  --       desc = "LSP Definitions / references / ... (Trouble)",
+  --     },
+  --     {
+  --       "<leader>tL",
+  --       "<cmd>Trouble loclist toggle<cr>",
+  --       desc = "Location List (Trouble)",
+  --     },
+  --     {
+  --       "<leader>tQ",
+  --       "<cmd>Trouble qflist toggle<cr>",
+  --       desc = "Quickfix List (Trouble)",
+  --     },
+  --     {
+  --       "<leader>tD",
+  --       "<cmd>Trouble todo filter = {tag = {TODO,FIX,FIXME}}<cr>",
+  --       desc = "TODO List (Trouble)",
+  --     },
+  --     {
+  --       "<leader>j",
+  --       function()
+  --         ---@diagnostic disable-next-line: missing-parameter, missing-fields
+  --         require("trouble").next { skip_groups = true, jump = true }
+  --       end,
+  --       desc = "Jump to next location",
+  --     },
+  --     {
+  --       "<leader>k",
+  --       function()
+  --         ---@diagnostic disable-next-line: missing-parameter, missing-fields
+  --         require("trouble").prev { skip_groups = true, jump = true }
+  --       end,
+  --       desc = "Jump to previous location",
+  --     },
+  --   },
+  -- },
 
   {
     "rachartier/tiny-inline-diagnostic.nvim",
@@ -865,18 +865,17 @@ return {
     end,
   },
 
-  {
-    "Goose97/timber.nvim",
-    version = "*", -- Use for stability; omit to use `main` branch for the latest features
-    event = "VeryLazy",
-    config = function()
-      require("timber").setup {
-        -- Configuration here, or leave empty to use defaults
-      }
-    end,
-  },
+  -- {
+  --   "Goose97/timber.nvim",
+  --   version = "*", -- Use for stability; omit to use `main` branch for the latest features
+  --   event = "VeryLazy",
+  --   config = function()
+  --     require("timber").setup {
+  --       -- Configuration here, or leave empty to use defaults
+  --     }
+  --   end,
+  -- },
 
-  -- gives highlights for motions
   {
     "nvim-mini/mini.nvim",
     lazy = false,
@@ -1193,17 +1192,17 @@ return {
       vim.keymap.set("n", "<leader>aa", sidekick_toggle, { desc = "Sidekick Toggle CLI" })
     end,
     keys = {
-      {
-        "<tab>",
-        function()
-          -- if there is a next edit, jump to it, otherwise apply it if any
-          if not require("sidekick").nes_jump_or_apply() then
-            return "<Tab>" -- fallback to normal tab
-          end
-        end,
-        expr = true,
-        desc = "Goto/Apply Next Edit Suggestion",
-      },
+      -- {
+      --   "<tab>",
+      --   function()
+      --     -- if there is a next edit, jump to it, otherwise apply it if any
+      --     if not require("sidekick").nes_jump_or_apply() then
+      --       return "<Tab>" -- fallback to normal tab
+      --     end
+      --   end,
+      --   expr = true,
+      --   desc = "Goto/Apply Next Edit Suggestion",
+      -- },
       {
         "<leader>as",
         function()
