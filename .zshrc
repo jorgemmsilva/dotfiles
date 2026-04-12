@@ -48,7 +48,8 @@ alias ......="cd ../../.."
 alias ........="cd ../../../.."
 
 # misc aliases
-alias nv='nvim'
+# alias nv='nvim'
+alias nv='~/mydevcontainer/nv'
 alias c='code'
 
 # git aliases

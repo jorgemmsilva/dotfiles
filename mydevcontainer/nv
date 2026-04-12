@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+#
+# nv - Launch sandboxed Neovim in a Docker container
+#
+# Usage:
+#   nv [directory] [-- nvim args...]
+#   nv .                    # open current dir
+#   nv ~/dev/myproject      # open specific dir
+#   nv . -- file.rs         # open specific file in project
+#
+set -euo pipefail
+
+IMAGE_NAME="nv"
+CONTAINER_PREFIX="nv"
+VOLUME_NAME="nv-data"
+
+# ── Parse arguments ──────────────────────────────────────────────
+TARGET_DIR=""
+NVIM_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --)
+            shift
+            NVIM_ARGS=("$@")
+            break
+            ;;
+        --build)
+            echo "Building $IMAGE_NAME image..."
+            SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+            rm -rf "$SCRIPT_DIR/nvim-config"
+            cp -r "${XDG_CONFIG_HOME:-$HOME/.config}/nvim" "$SCRIPT_DIR/nvim-config"
+            cp "${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml" "$SCRIPT_DIR/starship.toml" 2>/dev/null || true
+            docker build \
+                --build-arg UID="$(id -u)" \
+                -t "$IMAGE_NAME" "$SCRIPT_DIR"
+            rm -rf "$SCRIPT_DIR/nvim-config" "$SCRIPT_DIR/starship.toml"
+            echo "Done."
+            exit 0
+            ;;
+        --rebuild)
+            echo "Rebuilding $IMAGE_NAME image (no cache)..."
+            SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+            rm -rf "$SCRIPT_DIR/nvim-config"
+            cp -r "${XDG_CONFIG_HOME:-$HOME/.config}/nvim" "$SCRIPT_DIR/nvim-config"
+            cp "${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml" "$SCRIPT_DIR/starship.toml" 2>/dev/null || true
+            docker build --no-cache \
+                --build-arg UID="$(id -u)" \
+                -t "$IMAGE_NAME" "$SCRIPT_DIR"
+            rm -rf "$SCRIPT_DIR/nvim-config" "$SCRIPT_DIR/starship.toml"
+            echo "Done."
+            exit 0
+            ;;
+        --shell)
+            # Drop into a shell inside the container instead of nvim
+            # Useful for installing extra tools, debugging, etc.
+            SHELL_MODE=1
+            ;;
+        --help|-h)
+            echo "Usage: nv [directory] [-- nvim args...]"
+            echo ""
+            echo "Options:"
+            echo "  --build     Build the Docker image"
+            echo "  --rebuild   Build with --no-cache"
+            echo "  --shell     Drop into bash instead of nvim"
+            echo "  --help      Show this help"
+            echo ""
+            echo "Examples:"
+            echo "  nv .                  Open current directory"
+            echo "  nv ~/dev/project      Open specific directory"
+            echo "  nv . -- file.rs       Open a specific file"
+            echo "  nv . --shell          Get a shell in the container"
+            exit 0
+            ;;
+        *)
+            TARGET_DIR="$1"
+            ;;
+    esac
+    shift
+done
+
+# Default to current directory
+TARGET_DIR="${TARGET_DIR:-.}"
+TARGET_DIR="$(cd "$TARGET_DIR" 2>/dev/null && pwd)"
+
+# ── Check image exists ───────────────────────────────────────────
+if ! docker image inspect "$IMAGE_NAME" &>/dev/null; then
+    echo "Image '$IMAGE_NAME' not found. Run: nv --build"
+    exit 1
+fi
+
+# ── Create persistent volumes ────────────────────────────────────
+docker volume create "$VOLUME_NAME" &>/dev/null || true
+docker volume create "${VOLUME_NAME}-undo" &>/dev/null || true
+
+# ── Container name ───────────────────────────────────────────────
+DIR_SLUG="$(basename "$TARGET_DIR" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')"
+CONTAINER_NAME="${CONTAINER_PREFIX}-${DIR_SLUG}-$$"
+
+# ── Mounts ───────────────────────────────────────────────────────
+MOUNTS=(
+    # The project directory — this is the blast radius
+    -v "$TARGET_DIR:/workspace"
+
+    # Persistent nvim data (plugins, mason, undo, shada)
+    -v "$VOLUME_NAME:/home/dev/.local/share/nvim"
+    -v "${VOLUME_NAME}-undo:/home/dev/.vim/undodir"
+
+    # Git config (read-only)
+    -v "$HOME/.gitconfig:/home/dev/.gitconfig:ro"
+
+    # SSH keys (read-only) for git operations
+    # -v "$HOME/.ssh:/home/dev/.ssh:ro"
+
+    # Claude Code auth and config
+    -v "$HOME/.claude:/home/dev/.claude"
+)
+
+# ── Environment ──────────────────────────────────────────────────
+ENV_VARS=(
+    -e "TERM=${TERM:-xterm-256color}"
+    -e "COLORTERM=${COLORTERM:-truecolor}"
+)
+
+# Pass git identity via env so it works even with read-only .gitconfig
+GIT_NAME="$(git config user.name 2>/dev/null || true)"
+GIT_EMAIL="$(git config user.email 2>/dev/null || true)"
+[[ -n "$GIT_NAME" ]]  && ENV_VARS+=(-e "GIT_AUTHOR_NAME=$GIT_NAME" -e "GIT_COMMITTER_NAME=$GIT_NAME")
+[[ -n "$GIT_EMAIL" ]] && ENV_VARS+=(-e "GIT_AUTHOR_EMAIL=$GIT_EMAIL" -e "GIT_COMMITTER_EMAIL=$GIT_EMAIL")
+
+# ── Security hardening ───────────────────────────────────────────
+SECURITY=(
+    # Drop all capabilities, only add back what's needed
+    --cap-drop=ALL
+    # No new privileges (prevents setuid binaries)
+    --security-opt=no-new-privileges
+    # No network by default — uncomment next line to enable
+    # (you'll want network for LSP downloads, git push/pull, etc.)
+    # --network=none
+)
+
+# ── Entrypoint override for --shell mode ─────────────────────────
+ENTRY=()
+if [[ "${SHELL_MODE:-}" == "1" ]]; then
+    ENTRY=(--entrypoint /bin/bash)
+    NVIM_ARGS=()
+fi
+
+# ── Run ──────────────────────────────────────────────────────────
+exec docker run \
+    --rm \
+    -it \
+    --name "$CONTAINER_NAME" \
+    "${MOUNTS[@]}" \
+    "${ENV_VARS[@]}" \
+    "${SECURITY[@]}" \
+    "${ENTRY[@]}" \
+    "$IMAGE_NAME" \
+    "${NVIM_ARGS[@]}"
