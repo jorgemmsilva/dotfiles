@@ -17,7 +17,8 @@ local function get_session_dir()
 end
 
 local function get_session_file()
-  return get_session_dir() .. "/" .. percent_encode(vim.fn.getcwd()) .. ".vim"
+  local cwd = vim.env.NV_HOST_DIR or vim.fn.getcwd()
+  return get_session_dir() .. "/" .. percent_encode(cwd) .. ".vim"
 end
 
 local function is_suppressed()

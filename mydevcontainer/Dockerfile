@@ -86,5 +86,6 @@ WORKDIR /workspace
 
 ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
+ENV SHELL=/bin/bash
 
 ENTRYPOINT ["nvim"]

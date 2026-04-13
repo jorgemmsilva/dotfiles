@@ -723,7 +723,6 @@ return {
     },
   },
 
-
   {
     "folke/todo-comments.nvim",
     lazy = false,
@@ -1152,7 +1151,7 @@ return {
       cli = {
         mux = {
           backend = "zellij",
-          enabled = true,
+          enabled = false,
         },
       },
     },
