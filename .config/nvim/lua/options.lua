@@ -56,6 +56,19 @@ vim.o.updatetime = 250
 -- go to prev/next line with left/right when at the end/beginning of line
 vim.opt.whichwrap:append "<>[]hl"
 
+-- Use OSC 52 for clipboard so it works inside Docker/SSH with no display server
+vim.g.clipboard = {
+  name = "OSC 52",
+  copy = {
+    ["+"] = require("vim.ui.clipboard.osc52").copy "+",
+    ["*"] = require("vim.ui.clipboard.osc52").copy "*",
+  },
+  paste = {
+    ["+"] = require("vim.ui.clipboard.osc52").paste "+",
+    ["*"] = require("vim.ui.clipboard.osc52").paste "*",
+  },
+}
+
 -- disable some default providers
 vim.g.loaded_node_provider = 0
 vim.g.loaded_python3_provider = 0

@@ -10,6 +10,7 @@ RUN dnf install -y \
     gcc gcc-c++ clang clang-devel \
     fuse-libs \
     zsh fzf lsd zoxide direnv \
+    tmux \
     && dnf clean all
 
 # ── Neovim 0.12 (nightly, not yet in Fedora repos) ──────────────
