@@ -1153,6 +1153,11 @@ return {
           backend = "zellij",
           enabled = false,
         },
+        tools = {
+          claude_skip_permissions = {
+            cmd = { "claude", "--dangerously-skip-permissions" },
+          },
+        },
       },
     },
     config = function(_, opts)

@@ -9,6 +9,7 @@ RUN dnf install -y \
     git-delta openssh gnupg2 \
     gcc gcc-c++ clang clang-devel \
     fuse-libs \
+    zsh fzf lsd zoxide direnv \
     && dnf clean all
 
 # ── Neovim 0.12 (nightly, not yet in Fedora repos) ──────────────
@@ -29,7 +30,7 @@ RUN cargo install tree-sitter-cli stylua taplo-cli
 
 # ── Non-root user ────────────────────────────────────────────────
 ARG UID=501
-RUN useradd -m -u ${UID} -s /bin/bash dev
+RUN useradd -m -u ${UID} -s /bin/zsh dev
 
 RUN mkdir -p /home/dev/.local/share/nvim \
     /home/dev/.vim/undodir \
@@ -55,9 +56,7 @@ ENV GOPATH="/home/dev/go"
 ENV PATH="${GOPATH}/bin:${PATH}"
 
 # ── Claude Code ──────────────────────────────────────────────────
-RUN bun install -g @anthropic-ai/claude-code \
-    && printf '#!/bin/sh\nexec bun /home/dev/.bun/install/global/node_modules/@anthropic-ai/claude-code/cli.js "$@"\n' > /home/dev/.bun/bin/claude \
-    && chmod +x /home/dev/.bun/bin/claude
+RUN curl -fsSL https://claude.ai/install.sh | bash
 
 # ── Starship prompt ──────────────────────────────────────────────
 RUN mkdir -p /home/dev/.local/bin \
@@ -86,6 +85,6 @@ WORKDIR /workspace
 
 ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
-ENV SHELL=/bin/bash
+ENV SHELL=/bin/zsh
 
 ENTRYPOINT ["nvim"]

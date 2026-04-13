@@ -87,9 +87,6 @@ eval "$(direnv hook zsh)"
 # zoxide
 eval "$(zoxide init zsh)"
 
-# thefuck
-eval "$(thefuck --alias F)"
-
 #####################################
 #
 # needs to be at the end

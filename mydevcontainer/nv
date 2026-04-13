@@ -109,8 +109,18 @@ MOUNTS=(
     # Git config (read-only)
     -v "$HOME/.gitconfig:/home/dev/.gitconfig:ro"
 
-    # SSH keys (read-only) for git operations
-    # -v "$HOME/.ssh:/home/dev/.ssh:ro"
+    # Known hosts so SSH can verify github.com
+    -v "$HOME/.ssh/known_hosts:/home/dev/.ssh/known_hosts:ro"
+
+    # SSH agent socket (Docker Desktop for macOS)
+    -v /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock
+
+    # oh-my-zsh and zsh config (read-only)
+    -v "$HOME/.oh-my-zsh:/home/dev/.oh-my-zsh:ro"
+    -v "$HOME/.zshrc:/home/dev/.zshrc:ro"
+
+    # Persistent zsh history (shared with host)
+    -v "$HOME/.zsh_history:/home/dev/.zsh_history"
 
     # Claude Code auth and config
     -v "$HOME/.claude:/home/dev/.claude"
@@ -126,13 +136,10 @@ ENV_VARS=(
     -e "TERM=${TERM:-xterm-256color}"
     -e "COLORTERM=${COLORTERM:-truecolor}"
     -e "NV_HOST_DIR=$TARGET_DIR"
-)
 
-# Pass git identity via env so it works even with read-only .gitconfig
-# GIT_NAME="$(git config user.name 2>/dev/null || true)"
-# GIT_EMAIL="$(git config user.email 2>/dev/null || true)"
-# [[ -n "$GIT_NAME" ]]  && ENV_VARS+=(-e "GIT_AUTHOR_NAME=$GIT_NAME" -e "GIT_COMMITTER_NAME=$GIT_NAME")
-# [[ -n "$GIT_EMAIL" ]] && ENV_VARS+=(-e "GIT_AUTHOR_EMAIL=$GIT_EMAIL" -e "GIT_COMMITTER_EMAIL=$GIT_EMAIL")
+    # Forward the host SSH agent so the passphrase is only typed once on the host
+    -e "SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock"
+)
 
 # ── Security hardening ───────────────────────────────────────────
 SECURITY=(
@@ -148,7 +155,7 @@ SECURITY=(
 # ── Entrypoint override for --shell mode ─────────────────────────
 ENTRY=()
 if [[ "${SHELL_MODE:-}" == "1" ]]; then
-    ENTRY=(--entrypoint /bin/bash)
+    ENTRY=(--entrypoint /bin/zsh)
     NVIM_ARGS=()
 fi
 
