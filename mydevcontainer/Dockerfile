@@ -1,8 +1,9 @@
-FROM fedora:latest
+FROM fedora:42
 
 # ── System packages ──────────────────────────────────────────────
-# These change rarely — good cache layer
-RUN dnf install -y \
+# Cache mount keeps the dnf cache across rebuilds without bloating the layer
+RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
+    dnf install -y \
     @development-tools git curl wget unzip ripgrep fd-find \
     rustup golang \
     jq \
@@ -10,11 +11,12 @@ RUN dnf install -y \
     gcc gcc-c++ clang clang-devel \
     fuse-libs \
     zsh fzf lsd zoxide direnv \
-    tmux \
-    && dnf clean all
+    tmux
 
 # ── Neovim 0.12 (nightly, not yet in Fedora repos) ──────────────
-RUN curl -fsSL https://github.com/neovim/neovim/releases/download/v0.12.0/nvim-linux-arm64.tar.gz \
+ARG TARGETARCH
+RUN ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "arm64") \
+    && curl -fsSL "https://github.com/neovim/neovim/releases/download/v0.12.0/nvim-linux-${ARCH}.tar.gz" \
     | tar xz -C /usr/local --strip-components=1
 
 # ── Rust toolchain + cargo tools (slow, cached early) ───────────
@@ -26,17 +28,21 @@ RUN rustup-init -y --no-modify-path --default-toolchain stable \
     && rustup toolchain install nightly \
     && rustup component add rustfmt --toolchain nightly
 
-# Cargo installs — separate layer so rustup changes don't retrigger
-RUN cargo install tree-sitter-cli stylua taplo-cli
+# Cargo installs — cache registry + build dir so rebuilds are fast
+# and the layer only contains the final binaries
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/local/cargo/git \
+    --mount=type=cache,target=/tmp/cargo-build \
+    CARGO_TARGET_DIR=/tmp/cargo-build \
+    cargo install tree-sitter-cli stylua taplo-cli
 
 # ── Non-root user ────────────────────────────────────────────────
 ARG UID=501
-RUN useradd -m -u ${UID} -s /bin/zsh dev
-
-RUN mkdir -p /home/dev/.local/share/nvim \
-    /home/dev/.vim/undodir \
-    /home/dev/.cache/nvim \
-    /workspace \
+RUN useradd -m -u ${UID} -s /bin/zsh dev \
+    && mkdir -p /home/dev/.local/share/nvim \
+       /home/dev/.vim/undodir \
+       /home/dev/.cache/nvim \
+       /workspace \
     && chown -R dev:dev /home/dev /workspace
 
 USER dev
