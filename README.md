@@ -9,6 +9,10 @@ https://ohmyz.sh/
 https://github.com/starship/starship
 
 tmux
+tpm: 
+```shell
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
 
 https://github.com/delta-io/delta
 
