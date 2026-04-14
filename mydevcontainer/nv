@@ -127,6 +127,11 @@ MOUNTS=(
     -v "$HOME/.claude.json:/home/dev/.claude.json"
 )
 
+# ── Docker socket (Docker-outside-of-Docker) ────────────────────
+if [ -S /var/run/docker.sock ]; then
+    MOUNTS+=(-v /var/run/docker.sock:/var/run/docker.sock)
+fi
+
 # macos workaround to extract claude login from OS keychain
 security find-generic-password -a "$USER" -s "Claude Code-credentials" -w > ~/.claude/.credentials.json
 chmod 600 ~/.claude/.credentials.json
@@ -143,20 +148,17 @@ ENV_VARS=(
 
 # ── Security hardening ───────────────────────────────────────────
 SECURITY=(
-    # Drop all capabilities, only add back what's needed
     --cap-drop=ALL
-    # No new privileges (prevents setuid binaries)
-    --security-opt=no-new-privileges
+    --cap-add=SETUID       # entrypoint: setpriv drop to dev
+    --cap-add=SETGID
     # No network by default — uncomment next line to enable
     # (you'll want network for LSP downloads, git push/pull, etc.)
     # --network=none
 )
 
-# ── Entrypoint override for --shell mode ─────────────────────────
-ENTRY=()
+# ── Shell mode overrides CMD, not entrypoint ─────────────────────
 if [[ "${SHELL_MODE:-}" == "1" ]]; then
-    ENTRY=(--entrypoint /bin/zsh)
-    NVIM_ARGS=()
+    NVIM_ARGS=(/bin/zsh)
 fi
 
 # ── Run ──────────────────────────────────────────────────────────
@@ -167,6 +169,5 @@ exec docker run \
     "${MOUNTS[@]}" \
     "${ENV_VARS[@]}" \
     "${SECURITY[@]}" \
-    "${ENTRY[@]}" \
     "$IMAGE_NAME" \
     "${NVIM_ARGS[@]}"

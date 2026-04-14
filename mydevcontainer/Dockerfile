@@ -19,6 +19,11 @@ RUN ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "arm64") \
     && curl -fsSL "https://github.com/neovim/neovim/releases/download/v0.12.0/nvim-linux-${ARCH}.tar.gz" \
     | tar xz -C /usr/local --strip-components=1
 
+# ── Docker CLI (Docker-outside-of-Docker) ────────────────────────
+RUN dnf config-manager addrepo --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo \
+    && dnf install -y docker-ce-cli \
+    && dnf clean all
+
 # ── Rust toolchain + cargo tools (slow, cached early) ───────────
 ENV RUSTUP_HOME=/usr/local/rustup
 ENV CARGO_HOME=/usr/local/cargo
@@ -88,4 +93,9 @@ ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
 ENV SHELL=/bin/zsh
 
-ENTRYPOINT ["nvim"]
+USER root
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["nvim"]
