@@ -1,13 +1,4 @@
 #!/usr/bin/env bash
-#
-# nv - Launch sandboxed Neovim in a Docker container
-#
-# Usage:
-#   nv [directory] [-- nvim args...]
-#   nv .                    # open current dir
-#   nv ~/dev/myproject      # open specific dir
-#   nv . -- file.rs         # open specific file in project
-#
 set -euo pipefail
 
 IMAGE_NAME="nv"
@@ -29,22 +20,9 @@ while [[ $# -gt 0 ]]; do
             echo "Building $IMAGE_NAME image..."
             SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
             rm -rf "$SCRIPT_DIR/nvim-config"
-            cp -r "${XDG_CONFIG_HOME:-$HOME/.config}/nvim" "$SCRIPT_DIR/nvim-config"
-            cp "${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml" "$SCRIPT_DIR/starship.toml" 2>/dev/null || true
+            cp -r "$HOME/.config/nvim" "$SCRIPT_DIR/nvim-config"
+            cp "$HOME/.config/starship.toml" "$SCRIPT_DIR/starship.toml" 2>/dev/null || true
             docker build \
-                --build-arg UID="$(id -u)" \
-                -t "$IMAGE_NAME" "$SCRIPT_DIR"
-            rm -rf "$SCRIPT_DIR/nvim-config" "$SCRIPT_DIR/starship.toml"
-            echo "Done."
-            exit 0
-            ;;
-        --rebuild)
-            echo "Rebuilding $IMAGE_NAME image (no cache)..."
-            SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-            rm -rf "$SCRIPT_DIR/nvim-config"
-            cp -r "${XDG_CONFIG_HOME:-$HOME/.config}/nvim" "$SCRIPT_DIR/nvim-config"
-            cp "${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml" "$SCRIPT_DIR/starship.toml" 2>/dev/null || true
-            docker build --no-cache \
                 --build-arg UID="$(id -u)" \
                 -t "$IMAGE_NAME" "$SCRIPT_DIR"
             rm -rf "$SCRIPT_DIR/nvim-config" "$SCRIPT_DIR/starship.toml"
@@ -61,7 +39,6 @@ while [[ $# -gt 0 ]]; do
             echo ""
             echo "Options:"
             echo "  --build     Build the Docker image"
-            echo "  --rebuild   Build with --no-cache"
             echo "  --shell     Drop into bash instead of nvim"
             echo "  --help      Show this help"
             echo ""
