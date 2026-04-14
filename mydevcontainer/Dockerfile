@@ -43,7 +43,7 @@ RUN useradd -m -u ${UID} -s /bin/zsh dev \
        /home/dev/.vim/undodir \
        /home/dev/.cache/nvim \
        /workspace \
-    && chown -R dev:dev /home/dev /workspace
+    && chown -R dev:dev /home/dev /workspace /usr/local
 
 USER dev
 WORKDIR /home/dev
