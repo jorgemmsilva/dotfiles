@@ -210,20 +210,7 @@ return {
     config = function(_, opts)
       require("mason").setup(opts)
 
-      local ensure_installed = {
-        "lua-language-server",
-        "html-lsp",
-        "prettier",
-        "stylua",
-        "gopls",
-        "rust-analyzer",
-        "solhint",
-        "nomicfoundation-solidity-language-server",
-        "copilot-language-server",
-        "typescript-language-server",
-        "tailwindcss-language-server",
-        "eslint-lsp",
-      }
+      local ensure_installed = require("config.install_lsp_deps").mason_packages
 
       local registry = require "mason-registry"
       registry.refresh(function()
@@ -258,7 +245,7 @@ return {
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
     opts = {
-      ensure_installed = { "lua", "luadoc", "printf", "vim", "vimdoc", "nu", "typescript" },
+      ensure_installed = require("config.install_lsp_deps").treesitter_parsers,
 
       highlight = {
         enable = true,
@@ -268,15 +255,8 @@ return {
       indent = { enable = true },
     },
     config = function()
-      require("nvim-treesitter").install {
-        "lua",
-        "luadoc",
-        "printf",
-        "vim",
-        "vimdoc",
-        "nu",
-        "typescript",
-      }
+      local ts_parsers = require("config.install_lsp_deps").treesitter_parsers
+      require("nvim-treesitter").install(ts_parsers)
 
       vim.o.foldlevelstart = 99
 

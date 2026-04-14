@@ -72,15 +72,9 @@ COPY --chown=dev:dev nvim-config /home/dev/.config/nvim
 # ── Pre-install plugins ─────────────────────────────────────────
 RUN nvim --headless "+Lazy! sync" +qa 2>&1 | tail -5 || true
 
-# ── Pre-install treesitter parsers ───────────────────────────────
-RUN nvim --headless \
-    -c "lua require('nvim-treesitter').install({'lua','luadoc','printf','vim','vimdoc','nu','typescript','rust','go','toml','json','html','css','javascript','markdown','bash','solidity'})" \
-    -c "sleep 30" -c "qa!" 2>&1 | tail -5 || true
-
-# ── Mason: pre-install LSP servers ──────────────────────────────
-RUN nvim --headless \
-    -c "MasonInstall lua-language-server rust-analyzer gopls typescript-language-server nomicfoundation-solidity-language-server solhint" \
-    -c "sleep 60" -c "qa!" 2>&1 | tail -5 || true
+# ── Pre-install treesitter parsers + Mason LSP servers ───────────
+# Lists defined in lua/config/install_lsp_deps.lua
+RUN timeout 180 nvim --headless -c "lua require('config.install_lsp_deps').install()" 2>&1 | tail -5 || true
 
 WORKDIR /workspace
 
