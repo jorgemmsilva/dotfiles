@@ -552,70 +552,70 @@ return {
   --- Navigation
   ------------------------------------------------------------------
 
-  {
-    "mrjones2014/smart-splits.nvim",
-    lazy = false,
-    opts = {},
-    keys = {
-      {
-        "<C-h>",
-        function()
-          require("smart-splits").move_cursor_left()
-        end,
-        desc = "Move to left split/pane",
-      },
-      {
-        "<C-j>",
-        function()
-          require("smart-splits").move_cursor_down()
-        end,
-        desc = "Move to below split/pane",
-      },
-      {
-        "<C-k>",
-        function()
-          require("smart-splits").move_cursor_up()
-        end,
-        desc = "Move to above split/pane",
-      },
-      {
-        "<C-l>",
-        function()
-          require("smart-splits").move_cursor_right()
-        end,
-        desc = "Move to right split/pane",
-      },
-      {
-        "<leader>r",
-        function()
-          local ss = require "smart-splits"
-          local function try_resize(fn, fallback_cmd)
-            if not pcall(fn) then
-              vim.cmd(fallback_cmd)
-            end
-          end
-          vim.notify("RESIZE: h/j/k/l to resize, Esc to exit", vim.log.levels.INFO)
-          while true do
-            local key = vim.fn.getcharstr()
-            if key == "h" then
-              try_resize(ss.resize_left, "vertical resize -2")
-            elseif key == "l" then
-              try_resize(ss.resize_right, "vertical resize +2")
-            elseif key == "j" then
-              try_resize(ss.resize_down, "resize +2")
-            elseif key == "k" then
-              try_resize(ss.resize_up, "resize -2")
-            else
-              break
-            end
-            vim.cmd "redraw"
-          end
-          vim.notify("", vim.log.levels.INFO)
-        end,
-        desc = "Resize mode (hjkl, Esc to exit)",
-      },
-    },
-  },
+  -- {
+  --   "mrjones2014/smart-splits.nvim",
+  --   lazy = false,
+  --   opts = {},
+  --   keys = {
+  --     {
+  --       "<C-h>",
+  --       function()
+  --         require("smart-splits").move_cursor_left()
+  --       end,
+  --       desc = "Move to left split/pane",
+  --     },
+  --     {
+  --       "<C-j>",
+  --       function()
+  --         require("smart-splits").move_cursor_down()
+  --       end,
+  --       desc = "Move to below split/pane",
+  --     },
+  --     {
+  --       "<C-k>",
+  --       function()
+  --         require("smart-splits").move_cursor_up()
+  --       end,
+  --       desc = "Move to above split/pane",
+  --     },
+  --     {
+  --       "<C-l>",
+  --       function()
+  --         require("smart-splits").move_cursor_right()
+  --       end,
+  --       desc = "Move to right split/pane",
+  --     },
+  --     {
+  --       "<leader>r",
+  --       function()
+  --         local ss = require "smart-splits"
+  --         local function try_resize(fn, fallback_cmd)
+  --           if not pcall(fn) then
+  --             vim.cmd(fallback_cmd)
+  --           end
+  --         end
+  --         vim.notify("RESIZE: h/j/k/l to resize, Esc to exit", vim.log.levels.INFO)
+  --         while true do
+  --           local key = vim.fn.getcharstr()
+  --           if key == "h" then
+  --             try_resize(ss.resize_left, "vertical resize -2")
+  --           elseif key == "l" then
+  --             try_resize(ss.resize_right, "vertical resize +2")
+  --           elseif key == "j" then
+  --             try_resize(ss.resize_down, "resize +2")
+  --           elseif key == "k" then
+  --             try_resize(ss.resize_up, "resize -2")
+  --           else
+  --             break
+  --           end
+  --           vim.cmd "redraw"
+  --         end
+  --         vim.notify("", vim.log.levels.INFO)
+  --       end,
+  --       desc = "Resize mode (hjkl, Esc to exit)",
+  --     },
+  --   },
+  -- },
 
   ------------------------------------------------------------------
   --- MISC
