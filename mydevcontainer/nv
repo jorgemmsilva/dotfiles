@@ -129,7 +129,9 @@ MOUNTS=(
 
 # ── Docker socket (Docker-outside-of-Docker) ────────────────────
 if [ -S /var/run/docker.sock ]; then
+    DOCKER_GID=$(stat -f '%g' /var/run/docker.sock 2>/dev/null || stat -c '%g' /var/run/docker.sock)
     MOUNTS+=(-v /var/run/docker.sock:/var/run/docker.sock)
+    DOCKER_GROUP=(--group-add "$DOCKER_GID")
 fi
 
 # macos workaround to extract claude login from OS keychain
@@ -149,8 +151,7 @@ ENV_VARS=(
 # ── Security hardening ───────────────────────────────────────────
 SECURITY=(
     --cap-drop=ALL
-    --cap-add=SETUID       # entrypoint: setpriv drop to dev
-    --cap-add=SETGID
+    "${DOCKER_GROUP[@]}"
     # No network by default — uncomment next line to enable
     # (you'll want network for LSP downloads, git push/pull, etc.)
     # --network=none

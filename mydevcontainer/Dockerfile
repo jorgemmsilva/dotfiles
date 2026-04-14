@@ -93,9 +93,4 @@ ENV TERM=xterm-256color
 ENV COLORTERM=truecolor
 ENV SHELL=/bin/zsh
 
-USER root
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-ENTRYPOINT ["entrypoint.sh"]
 CMD ["nvim"]
