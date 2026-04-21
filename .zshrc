@@ -82,7 +82,7 @@ alias clippy='cargo clippy --workspace --all-targets --all-features --fix --allo
 ###############################
 
 # direnv
-eval "$(direnv hook zsh)"
+# eval "$(direnv hook zsh)"
 
 # zoxide
 eval "$(zoxide init zsh)"

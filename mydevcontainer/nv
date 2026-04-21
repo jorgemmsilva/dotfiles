@@ -99,9 +99,9 @@ MOUNTS=(
     # Persistent zsh history (shared with host)
     -v "$HOME/.zsh_history:/home/dev/.zsh_history"
 
-    # Claude Code auth and config
-    -v "$HOME/.claude:/home/dev/.claude"
-    -v "$HOME/.claude.json:/home/dev/.claude.json"
+    # Opencode
+    -v "$HOME/.opencode:/home/dev/.opencode"
+    -v "$HOME/.local/share/opencode/:/home/dev/.local/share/opencode/"
 )
 
 # ── Docker socket (Docker-outside-of-Docker) ────────────────────
@@ -111,9 +111,19 @@ if [ -S /var/run/docker.sock ]; then
     DOCKER_GROUP=(--group-add "$DOCKER_GID")
 fi
 
-# macos workaround to extract claude login from OS keychain
-security find-generic-password -a "$USER" -s "Claude Code-credentials" -w > ~/.claude/.credentials.json
-chmod 600 ~/.claude/.credentials.json
+
+# ── Claude ───────────────────────────────────────────────────────
+if [[ -d "$HOME/.claude" ]]; then
+  MOUNTS+=(
+    # Claude Code auth and config
+    -v "$HOME/.claude:/home/dev/.claude"
+    -v "$HOME/.claude.json:/home/dev/.claude.json"
+    )
+  # macos workaround to extract claude login from OS keychain
+  security find-generic-password -a "$USER" -s "Claude Code-credentials" -w > ~/.claude/.credentials.json
+  chmod 600 ~/.claude/.credentials.json
+fi
+
 
 # ── Environment ──────────────────────────────────────────────────
 ENV_VARS=(

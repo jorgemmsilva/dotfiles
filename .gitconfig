@@ -2,8 +2,8 @@
 	signingkey = FCEC6724630D316D
 	name = Jorge Silva
 	email = jorge@syndicate.io
-[commit]
-	gpgsign = true
+#[commit]
+#	gpgsign = true
 [pull]
   rebase = true
 

@@ -11,6 +11,7 @@ RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
     gcc gcc-c++ clang clang-devel \
     fuse-libs \
     zsh fzf lsd zoxide direnv \
+    which \
     tmux
 
 # ── Neovim 0.12 (nightly, not yet in Fedora repos) ──────────────
@@ -57,6 +58,12 @@ WORKDIR /home/dev
 RUN curl -fsSL https://bun.sh/install | bash
 ENV BUN_INSTALL="/home/dev/.bun"
 ENV PATH="${BUN_INSTALL}/bin:${PATH}"
+
+
+# ── opencode ──────────────────────────────────────────────────────────
+RUN bun add -g opencode-ai
+# workaround for running without node
+RUN ln -s "$(which bun)" ~/.bun/bin/node
 
 # ── Foundry (forge, cast, anvil, chisel) ─────────────────────────
 RUN curl -fsSL https://foundry.paradigm.xyz | bash \
