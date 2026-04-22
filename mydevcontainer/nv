@@ -67,7 +67,7 @@ if ! docker image inspect "$IMAGE_NAME" &>/dev/null; then
 fi
 
 # ── Create persistent volumes ────────────────────────────────────
-docker volume create "$VOLUME_NAME" &>/dev/null || true
+docker volume create "${VOLUME_NAME}-sessions" &>/dev/null || true
 docker volume create "${VOLUME_NAME}-undo" &>/dev/null || true
 
 # ── Container name ───────────────────────────────────────────────
@@ -79,8 +79,8 @@ MOUNTS=(
     # The project directory — this is the blast radius
     -v "$TARGET_DIR:/workspace"
 
-    # Persistent nvim data (plugins, mason, undo, shada)
-    -v "$VOLUME_NAME:/home/dev/.local/share/nvim"
+    # Persistent nvim data (sessions, undo history)
+    -v "${VOLUME_NAME}-sessions:/home/dev/.local/share/nvim/sessions"
     -v "${VOLUME_NAME}-undo:/home/dev/.vim/undodir"
 
     # Git config (read-only)
@@ -138,13 +138,13 @@ ENV_VARS=(
 # ── Security hardening ───────────────────────────────────────────
 SECURITY=(
     --cap-drop=ALL
-    "${DOCKER_GROUP[@]}"
+    "${DOCKER_GROUP[@]+"${DOCKER_GROUP[@]}"}"
     # No network by default — uncomment next line to enable
     # (you'll want network for LSP downloads, git push/pull, etc.)
     # --network=none
 )
 
-# ── Shell mode overrides CMD, not entrypoint ─────────────────────
+# ── Shell mode overrides ─────────────────────
 if [[ "${SHELL_MODE:-}" == "1" ]]; then
     NVIM_ARGS=(/bin/zsh)
 fi
@@ -158,4 +158,4 @@ exec docker run \
     "${ENV_VARS[@]}" \
     "${SECURITY[@]}" \
     "$IMAGE_NAME" \
-    "${NVIM_ARGS[@]}"
+    "${NVIM_ARGS[@]+"NVIM_ARGS[@]"}"

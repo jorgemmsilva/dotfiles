@@ -51,6 +51,7 @@ alias ........="cd ../../../.."
 # alias nv='nvim'
 alias nv='~/mydevcontainer/nv'
 alias c='code'
+alias oc='opencode'
 
 # git aliases
 alias gs="git status"
@@ -91,3 +92,7 @@ eval "$(zoxide init zsh)"
 #
 # needs to be at the end
 eval "$(starship init zsh)"
+
+# opencode
+export PATH=/Users/jorgesilva/.opencode/bin:$PATH
+source ~/.bashrc
