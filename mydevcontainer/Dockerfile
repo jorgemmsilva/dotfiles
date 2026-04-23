@@ -1,5 +1,10 @@
 FROM fedora:42
 
+# ── Host CA certificates (corporate proxies, self-signed certs) ──
+COPY mac-certs.pem /etc/pki/ca-trust/source/anchors/mac-certs.pem
+RUN update-ca-trust
+ENV NODE_EXTRA_CA_CERTS=/etc/pki/tls/certs/ca-bundle.crt
+
 # ── System packages ──────────────────────────────────────────────
 # Cache mount keeps the dnf cache across rebuilds without bloating the layer
 RUN --mount=type=cache,target=/var/cache/dnf,sharing=locked \
@@ -29,6 +34,7 @@ RUN dnf config-manager addrepo --from-repofile=https://download.docker.com/linux
 ENV RUSTUP_HOME=/usr/local/rustup
 ENV CARGO_HOME=/usr/local/cargo
 ENV PATH="/usr/local/cargo/bin:${PATH}"
+ENV RUSTUP_USE_CURL=1
 RUN rustup-init -y --no-modify-path --default-toolchain stable \
     && rustup component add rust-analyzer \
     && rustup toolchain install nightly \

@@ -22,10 +22,12 @@ while [[ $# -gt 0 ]]; do
             rm -rf "$SCRIPT_DIR/nvim-config"
             cp -r "$HOME/.config/nvim" "$SCRIPT_DIR/nvim-config"
             cp "$HOME/.config/starship.toml" "$SCRIPT_DIR/starship.toml" 2>/dev/null || true
+            # re-use system certificates to download stuff inside the container
+            security find-certificate -a -p /Library/Keychains/System.keychain > "$SCRIPT_DIR/mac-certs.pem"
             docker build \
                 --build-arg UID="$(id -u)" \
                 -t "$IMAGE_NAME" "$SCRIPT_DIR"
-            rm -rf "$SCRIPT_DIR/nvim-config" "$SCRIPT_DIR/starship.toml"
+            rm -rf "$SCRIPT_DIR/nvim-config" "$SCRIPT_DIR/starship.toml" "$SCRIPT_DIR/mac-certs.pem"
             echo "Done."
             exit 0
             ;;
@@ -158,4 +160,4 @@ exec docker run \
     "${ENV_VARS[@]}" \
     "${SECURITY[@]}" \
     "$IMAGE_NAME" \
-    "${NVIM_ARGS[@]+"NVIM_ARGS[@]"}"
+    "${NVIM_ARGS[@]+"${NVIM_ARGS[@]}"}"

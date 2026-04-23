@@ -1131,11 +1131,16 @@ return {
       cli = {
         mux = {
           backend = "tmux",
-          enabled = false,
+          enabled = true,
         },
         tools = {
           claude_skip_permissions = {
             cmd = { "claude", "--dangerously-skip-permissions" },
+          },
+        },
+        win = {
+          keys = {
+            escape = { "<Esc>", "<c-[>", mode = "t" },
           },
         },
       },
