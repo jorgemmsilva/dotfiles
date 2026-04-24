@@ -64,6 +64,6 @@ restore_layout
 [ -z "$name" ] && exit 0
 
 path="${SESSIONS_DIR}/${name}.kitty-session"
-[ -f "$path" ] || printf 'launch\n' > "$path"
+[ -f "$path" ] || printf 'new_os_window\nlaunch\n' > "$path"
 
 kitten @ action goto_session "$path"

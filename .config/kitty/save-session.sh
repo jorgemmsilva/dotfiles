@@ -31,7 +31,7 @@ current=$(printf '%s' "$ls_json" | jq -r '
 if [ -n "$current" ]; then
   path="${SESSIONS_DIR}/${current}.kitty-session"
   if [ -f "$path" ]; then
-    kitten @ action save_as_session --save-only --match=session:. "$path"
+    kitten @ action "save_as_session --save-only --match='state:focused_os_window and session:. and not var:skip_save=1' \"$path\""
     exit 0
   fi
 fi
@@ -52,4 +52,4 @@ name="${name%.kitty_session}"
 name="${name%.session}"
 
 path="${SESSIONS_DIR}/${name}.kitty-session"
-kitten @ action save_as_session --save-only "$path"
+kitten @ action "save_as_session --save-only --match='state:focused_os_window and not var:skip_save=1' \"$path\""
