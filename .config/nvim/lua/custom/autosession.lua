@@ -33,14 +33,14 @@ local function is_suppressed()
 end
 
 function M.save()
-  if is_suppressed() then
+  if is_suppressed() or vim.env.NVIM_EPHEMERAL then
     return
   end
   vim.cmd("mksession! " .. vim.fn.fnameescape(get_session_file()))
 end
 
 function M.restore()
-  if vim.fn.argc() > 0 then
+  if vim.fn.argc() > 0 or vim.env.NVIM_EPHEMERAL then
     return
   end
   local session_file = get_session_file()
