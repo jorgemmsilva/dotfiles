@@ -23,21 +23,22 @@ map("n", "<C-S-l>", "20zl", { desc = "scroll 20 chars to the right" })
 map("n", "<C-S-h>", "20zh", { desc = "scroll 20 chars to the left" })
 
 -- window navigation (in floating windows, act as j/k for menu navigation)
+-- superseeded by smart-split
 --
-map("n", "<C-h>", "<C-w>h", { desc = "switch window left" })
-map("n", "<C-l>", "<C-w>l", { desc = "switch window right" })
-map("n", "<C-j>", function()
-  if vim.api.nvim_win_get_config(0).relative ~= "" then
-    return "j"
-  end
-  return "<C-w>j"
-end, { expr = true, desc = "switch window down / menu down" })
-map("n", "<C-k>", function()
-  if vim.api.nvim_win_get_config(0).relative ~= "" then
-    return "k"
-  end
-  return "<C-w>k"
-end, { expr = true, desc = "switch window up / menu up" })
+-- map("n", "<C-h>", "<C-w>h", { desc = "switch window left" })
+-- map("n", "<C-l>", "<C-w>l", { desc = "switch window right" })
+-- map("n", "<C-j>", function()
+--   if vim.api.nvim_win_get_config(0).relative ~= "" then
+--     return "j"
+--   end
+--   return "<C-w>j"
+-- end, { expr = true, desc = "switch window down / menu down" })
+-- map("n", "<C-k>", function()
+--   if vim.api.nvim_win_get_config(0).relative ~= "" then
+--     return "k"
+--   end
+--   return "<C-w>k"
+-- end, { expr = true, desc = "switch window up / menu up" })
 
 -- keep cursor in the middle of the screen while scrolling
 map("n", "<C-u>", "<C-u>zz")
