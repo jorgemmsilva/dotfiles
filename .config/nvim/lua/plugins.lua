@@ -1140,7 +1140,7 @@ return {
         },
         win = {
           keys = {
-            escape = { "<Esc>", "<c-[>", mode = "t" },
+            escape = { "<C-c>", "<c-[>", mode = "t" },
           },
         },
       },

@@ -66,5 +66,18 @@ lua_capabilities.textDocument.completion.completionItem = {
 vim.lsp.config("lua_ls", { settings = lua_lsp_settings })
 
 ------------------------------------------------------------------
+--- TypeScript
+------------------------------------------------------------------
+vim.lsp.config("ts_ls", {
+  init_options = {
+    maxTsServerMemory = 8192,
+    -- use fewer syntax/semantic workers for large monorepos
+    tsserver = {
+      useSyntaxServer = "auto",
+    },
+  },
+})
+
+------------------------------------------------------------------
 ------------------------------------------------------------------
 vim.lsp.enable(servers)

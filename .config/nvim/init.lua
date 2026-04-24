@@ -1,9 +1,8 @@
 require "options"
+require "autocmds"
 
 require "config.lazy"
-
 require "filetypes"
-require "autocmds"
 require "cmds"
 require "mappings"
 
