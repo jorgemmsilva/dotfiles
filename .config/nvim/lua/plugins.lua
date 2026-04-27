@@ -1142,6 +1142,14 @@ return {
         win = {
           keys = {
             escape = { "<C-c>", "<c-[>", mode = "t" },
+            newline = {
+              "<S-CR>",
+              function(t)
+                t:send "\n"
+              end,
+              mode = "t",
+              desc = "insert newline",
+            },
           },
         },
       },
