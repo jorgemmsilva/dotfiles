@@ -25,6 +25,14 @@ plugins=(
   fzf
 )
 
+# Cache compinit to skip expensive rebuild on oh-my-zsh startup
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
+
 source $ZSH/oh-my-zsh.sh
 
 ###############################
