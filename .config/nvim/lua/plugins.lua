@@ -18,6 +18,7 @@ return {
           Visual = { bg = "#625e7a" },
           WinSeparator = { fg = "#7E9CD8" },
           -- WinSeparator = { fg = "#FF9E3B" },
+          SnacksPickerDir = { fg = colors.palette.sakuraPink },
         }
       end,
     },
