@@ -893,6 +893,16 @@ return {
         -- bigfile = { enabled = true },
         -- dashboard = { enabled = true },
         explorer = { enabled = true },
+        gitbrowse = {
+          url_patterns = {
+            ["gitlab%.cfdata%.org"] = {
+              branch = "/-/tree/{branch}",
+              file = "/-/blob/{branch}/{file}#L{line_start}-{line_end}",
+              permalink = "/-/blob/{commit}/{file}#L{line_start}-{line_end}",
+              commit = "/-/commit/{commit}",
+            },
+          },
+        },
         indent = { enabled = true, animate = { enabled = false } },
         input = {
           enabled = true,
