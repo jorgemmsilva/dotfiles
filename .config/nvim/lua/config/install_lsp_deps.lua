@@ -33,6 +33,7 @@ M.mason_packages = {
   "typescript-language-server",
   "tailwindcss-language-server",
   "eslint-lsp",
+  "codelldb",
 }
 
 --- Install all treesitter parsers and Mason packages.
@@ -42,7 +43,9 @@ function M.install()
 
   local function on_done()
     pending = pending - 1
-    if pending == 0 then vim.cmd "qa!" end
+    if pending == 0 then
+      vim.cmd "qa!"
+    end
   end
   local safe_done = vim.schedule_wrap(on_done)
 

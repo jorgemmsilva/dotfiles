@@ -46,10 +46,18 @@ if [ -n "$current" ]; then
   list=$(printf '%s\n' "$list" | grep -vxF "$current" || true)
 fi
 
+term_lines=$(tput lines 2>/dev/null || echo 24)
+fzf_height=$(( term_lines * 30 / 100 ))
+[ "$fzf_height" -lt 8 ] && fzf_height=8
+
+top_margin=$(( (term_lines - fzf_height) / 2 ))
+bottom_margin=$(( term_lines - fzf_height - top_margin ))
+
 selection=$(printf '%s\n' "$list" | fzf \
     --print-query \
     --prompt='session: ' \
-    --height=30% \
+    --margin="${top_margin},0,${bottom_margin},0" \
+    --layout=reverse \
     --border=rounded \
     --border-label=' sessions ' \
     --color='border:#585b70,label:#cdd6f4' \
