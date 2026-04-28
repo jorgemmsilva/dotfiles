@@ -10,4 +10,3 @@ vim.filetype.add {
     ["Dockerfile.*"] = "dockerfile",
   },
 }
-
