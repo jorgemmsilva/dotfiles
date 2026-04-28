@@ -5,6 +5,31 @@ set -uo pipefail
 SESSIONS_DIR="${HOME}/.config/kitty/sessions"
 mkdir -p "$SESSIONS_DIR"
 
+LOCK_DIR="${HOME}/.cache/kitty"
+mkdir -p "$LOCK_DIR"
+LOCK_FILE="$LOCK_DIR/session-switcher.lock"
+
+if [ -f "$LOCK_FILE" ]; then
+  read -r old_pid old_win_id < "$LOCK_FILE"
+  if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null; then
+    if ps -p "$old_pid" -o args= | grep -q "session-switcher"; then
+      if [ -n "$old_win_id" ]; then
+        kitten @ send-text --match "id:${old_win_id}" $'\x1b[B' 2>/dev/null || true
+      else
+        kitten @ send-text $'\x1b[B' 2>/dev/null || true
+      fi
+      exit 0
+    fi
+  fi
+  rm -f "$LOCK_FILE"
+fi
+
+win_id="${KITTY_WINDOW_ID:-}"
+if [ -z "$win_id" ]; then
+  win_id=$(kitten @ ls 2>/dev/null | jq -r '[.[].tabs[].windows[] | select(.is_focused == true) | .id][0] // empty')
+fi
+printf '%s %s\n' $$ "$win_id" > "$LOCK_FILE"
+
 ls_json=$(kitten @ ls 2>/dev/null)
 [ -z "$ls_json" ] && ls_json='[]'
 
@@ -15,6 +40,7 @@ restored=0
 restore_layout() {
   [ "$restored" = 1 ] && return
   restored=1
+  rm -f "$LOCK_FILE"
   if [ -n "$orig_layout" ] && [ "$orig_layout" != "stack" ]; then
     kitten @ action goto_layout "$orig_layout" 2>/dev/null || true
   fi
@@ -54,6 +80,7 @@ top_margin=$(( (term_lines - fzf_height) / 2 ))
 bottom_margin=$(( term_lines - fzf_height - top_margin ))
 
 selection=$(printf '%s\n' "$list" | fzf \
+    --cycle \
     --print-query \
     --prompt='session: ' \
     --margin="${top_margin},0,${bottom_margin},0" \
