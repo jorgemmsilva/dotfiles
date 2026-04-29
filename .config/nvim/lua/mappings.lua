@@ -333,8 +333,8 @@ map("n", "<leader>[", ":bprevious<CR>", { desc = "buffer prev" })
 --                          Terminal
 --------------------------------------------------------------------------------
 
--- this key combo no longer works
 map({ "n", "t", "i" }, "<C-`>", (require "custom.terminal").toggle_floating_terminal, { desc = "Toggle terminal" })
+map({ "n" }, "tt", (require "custom.terminal").toggle_floating_terminal, { desc = "Toggle terminal" })
 
 -- map <Esc> to exit terminal mode
 map("t", "<Esc>", [[<C-\><C-n>]], { noremap = true })

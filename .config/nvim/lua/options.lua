@@ -91,7 +91,7 @@ vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,
 -- allow <C-o> to go to a closed buffer
 -- vim.opt.jumpoptions:remove "clean"
 
--- nvim features
+-- new nvim features
 --
 vim.cmd "packadd nvim.undotree"
 
