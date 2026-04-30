@@ -315,7 +315,7 @@ map("n", "<leader><S-x>", function()
   local buffers_to_delete = {}
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if not visible_buffers[buf] and vim.bo[buf].buftype ~= "terminal" then
+    if not visible_buffers[buf] and vim.bo[buf].buftype ~= "terminal" and not vim.bo[buf].modified then
       table.insert(buffers_to_delete, buf)
     end
   end
