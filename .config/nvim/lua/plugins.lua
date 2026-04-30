@@ -1157,8 +1157,20 @@ return {
           enabled = true,
         },
         tools = {
-          claude_skip_permissions = {
-            cmd = { "claude", "--dangerously-skip-permissions" },
+          -- claude_skip_permissions = {
+          --   cmd = { "claude", "--dangerously-skip-permissions" },
+          -- },
+          opencode2 = {
+            cmd = { "opencode" },
+          },
+          opencode3 = {
+            cmd = { "opencode" },
+          },
+          opencode4 = {
+            cmd = { "opencode" },
+          },
+          opencode5 = {
+            cmd = { "opencode" },
           },
         },
         win = {
