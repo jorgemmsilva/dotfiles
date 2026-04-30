@@ -332,6 +332,7 @@ return {
           gitsigns.reset_hunk { vim.fn.line ".", vim.fn.line "v" }
         end, { desc = "Git: Reset Hunk" })
 
+        map("n", "<leader>hU", gitsigns.reset_buffer_index, { desc = "Git: Unstage Buffer" })
         map("n", "<leader>hS", gitsigns.stage_buffer, { desc = "Git: Stage Buffer" })
         map("n", "<leader>hR", gitsigns.reset_buffer, { desc = "Git: Revert Buffer" })
         map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "Git: Preview Hunk" })
