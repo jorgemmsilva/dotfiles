@@ -96,6 +96,30 @@ return {
           require("snacks").picker.grep { cwd = path }
         end, { buffer = bufnr, noremap = true, silent = true, desc = "Live grep in directory" })
 
+        -- press zc to collapse the current folder (or parent if on a file)
+        vim.keymap.set("n", "zc", function()
+          local node = api.tree.get_node_under_cursor()
+          if not node then
+            return
+          end
+          if node.type == "file" or not node.open then
+            -- navigate to parent and close it
+            api.node.navigate.parent()
+            node = api.tree.get_node_under_cursor()
+          end
+          if node and node.open then
+            api.node.open.edit()
+          end
+        end, { buffer = bufnr, noremap = true, silent = true, desc = "Collapse current folder" })
+
+        -- press zC to collapse all directories
+        vim.keymap.set(
+          "n",
+          "zC",
+          api.tree.collapse_all,
+          { buffer = bufnr, noremap = true, silent = true, desc = "Collapse all" }
+        )
+
         -- press gx to open file with system default application
         vim.keymap.set("n", "gx", function()
           local node = api.tree.get_node_under_cursor()
