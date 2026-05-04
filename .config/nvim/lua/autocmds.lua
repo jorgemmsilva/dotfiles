@@ -58,13 +58,54 @@ autocmd("LspAttach", {
 -- })
 
 --------------
+-- Multiple terminal fixes
+--------------
 -- Set git branch for terminal buffers (so statusline shows it)
+-- fix yanking wrapped lines from the terminal
 autocmd("TermOpen", {
-  callback = function()
+  callback = function(ev)
     local head = vim.trim(vim.fn.system "git rev-parse --abbrev-ref HEAD 2>/dev/null")
     if vim.v.shell_error == 0 then
       vim.b.gitsigns_head = head
     end
+
+    -- Smart yank: join soft-wrapped terminal lines before copying to system clipboard.
+    -- Terminal soft-wrapped rows are always exactly the PTY width (padded with spaces).
+    -- Lines shorter than the PTY width end with a real newline, so we keep those breaks.
+    vim.keymap.set("v", "<leader>y", function()
+      -- Get effective text area width (window width minus number col, signcolumn, etc.)
+      local wininfo = vim.fn.getwininfo(vim.fn.win_getid())[1]
+      local pty_width = wininfo.width - wininfo.textoff
+
+      -- vim.fn.line("v") = start of visual selection, vim.fn.line(".") = cursor
+      local v_start = vim.fn.line "v"
+      local v_end = vim.fn.line "."
+      if v_start > v_end then
+        v_start, v_end = v_end, v_start
+      end
+
+      local lines = vim.api.nvim_buf_get_lines(0, v_start - 1, v_end, false)
+
+      -- Walk lines: join any line whose length >= pty_width with the next (it's a continuation)
+      local result = {}
+      local current = ""
+      for _, line in ipairs(lines) do
+        current = current .. line
+        if #line < pty_width then
+          table.insert(result, current)
+          current = ""
+        end
+      end
+      if current ~= "" then
+        table.insert(result, current)
+      end
+
+      local text = table.concat(result, "\n")
+      vim.fn.setreg("+", text)
+      -- Exit visual mode
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "nx", false)
+      vim.notify("Yanked " .. #result .. " logical line(s) to clipboard", vim.log.levels.INFO)
+    end, { buffer = ev.buf, desc = "Smart yank: join wrapped terminal lines to system clipboard" })
   end,
 })
 

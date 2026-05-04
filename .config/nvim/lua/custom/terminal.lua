@@ -122,4 +122,3 @@ M.open_split_terminal = function(vertical)
 end
 
 return M
-
