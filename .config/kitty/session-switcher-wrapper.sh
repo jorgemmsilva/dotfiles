@@ -22,4 +22,5 @@ if [ -f "$LOCK_FILE" ]; then
   rm -f "$LOCK_FILE"
 fi
 
-kitten @ --to "$KITTY_SOCKET" launch --type=overlay --var=skip_save=1 --allow-remote-control ~/.config/kitty/session-switcher.sh
+# NOTE: IS_NVIM is an hack to allow ctrl+j/k to work on the fzf picker
+kitten @ --to "$KITTY_SOCKET" launch --type=overlay --var=skip_save=1 --var=IS_NVIM=1 --allow-remote-control ~/.config/kitty/session-switcher.sh

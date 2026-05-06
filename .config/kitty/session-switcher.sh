@@ -88,6 +88,7 @@ selection=$(printf '%s\n' "$list" | fzf \
     --border=rounded \
     --border-label=' sessions ' \
     --color='border:#585b70,label:#cdd6f4' \
+    --bind 'ctrl-j:down,ctrl-k:up' \
     --expect=enter)
 
 query=$(printf '%s' "$selection" | sed -n '1p')
