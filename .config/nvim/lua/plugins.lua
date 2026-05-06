@@ -33,13 +33,18 @@ return {
     cmd = { "NvimTreeToggle", "NvimTreeFocus" },
     config = function()
       local nvim_tree_width = 30
+      local max_tree_width_pct = 0.25
       vim.api.nvim_create_autocmd("WinResized", {
         callback = function()
           for _, win in ipairs(vim.v.event.windows or {}) do
             if vim.api.nvim_win_is_valid(win) then
               local buf = vim.api.nvim_win_get_buf(win)
               if vim.bo[buf].filetype == "NvimTree" then
-                nvim_tree_width = vim.api.nvim_win_get_width(win)
+                local w = vim.api.nvim_win_get_width(win)
+                local max_w = math.floor(vim.o.columns * max_tree_width_pct)
+                if w <= max_w then
+                  nvim_tree_width = w
+                end
               end
             end
           end
@@ -1204,15 +1209,19 @@ return {
           -- },
           opencode2 = {
             cmd = { "opencode" },
+            is_proc = "\\<opencode\\>",
           },
           opencode3 = {
             cmd = { "opencode" },
+            is_proc = "\\<opencode\\>",
           },
           opencode4 = {
             cmd = { "opencode" },
+            is_proc = "\\<opencode\\>",
           },
           opencode5 = {
             cmd = { "opencode" },
+            is_proc = "\\<opencode\\>",
           },
         },
         win = {
