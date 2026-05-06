@@ -31,104 +31,121 @@ return {
   {
     "nvim-tree/nvim-tree.lua",
     cmd = { "NvimTreeToggle", "NvimTreeFocus" },
-    opts = {
-      filters = {
-        dotfiles = false,
-        git_ignored = true,
-      },
-      disable_netrw = true,
-      hijack_cursor = true,
-      sync_root_with_cwd = true,
-      update_focused_file = {
-        enable = true,
-        update_root = false,
-      },
-      actions = {
-        open_file = {
-          quit_on_open = true,
+    config = function()
+      local nvim_tree_width = 30
+      vim.api.nvim_create_autocmd("WinResized", {
+        callback = function()
+          for _, win in ipairs(vim.v.event.windows or {}) do
+            if vim.api.nvim_win_is_valid(win) then
+              local buf = vim.api.nvim_win_get_buf(win)
+              if vim.bo[buf].filetype == "NvimTree" then
+                nvim_tree_width = vim.api.nvim_win_get_width(win)
+              end
+            end
+          end
+        end,
+      })
+      require("nvim-tree").setup {
+        filters = {
+          dotfiles = false,
+          git_ignored = true,
         },
-      },
-      view = {
-        width = 30,
-        preserve_window_proportions = true,
-        number = false,
-        relativenumber = false,
-        signcolumn = "no",
-      },
-      renderer = {
-        root_folder_label = false,
-        highlight_git = true,
-        indent_markers = { enable = true },
-        icons = {
-          glyphs = {
-            default = "󰈚",
-            folder = {
-              default = "",
-              empty = "",
-              empty_open = "",
-              open = "",
-              symlink = "",
-            },
-            git = { unmerged = "" },
+        disable_netrw = true,
+        hijack_cursor = true,
+        sync_root_with_cwd = true,
+        update_focused_file = {
+          enable = true,
+          update_root = { enable = true },
+        },
+        actions = {
+          open_file = {
+            quit_on_open = true,
           },
         },
-      },
-      on_attach = function(bufnr)
-        local api = require "nvim-tree.api"
+        view = {
+          width = function()
+            return nvim_tree_width
+          end,
+          preserve_window_proportions = true,
+          number = false,
+          relativenumber = false,
+          signcolumn = "no",
+        },
+        renderer = {
+          root_folder_label = false,
+          highlight_git = "all",
+          indent_markers = { enable = true },
+          icons = {
+            glyphs = {
+              default = "󰈚",
+              folder = {
+                default = "",
+                empty = "",
+                empty_open = "",
+                open = "",
+                symlink = "",
+              },
+              git = { unmerged = "" },
+            },
+          },
+        },
+        on_attach = function(bufnr)
+          local api = require "nvim-tree.api"
 
-        -- Default mappings
-        api.config.mappings.default_on_attach(bufnr)
+          -- Default mappings
+          api.config.mappings.default_on_attach(bufnr)
 
-        -- Remove the - keymap
-        vim.keymap.del("n", "-", { buffer = bufnr })
+          -- Remove the - keymap
+          vim.keymap.del("n", "-", { buffer = bufnr })
 
-        -- press F to search in directory
-        vim.keymap.set("n", "F", function()
-          local node = api.tree.get_node_under_cursor()
-          if not node then
-            return
-          end
-          local path = node.absolute_path
-          -- If it's a file, use its parent directory
-          if node.type == "file" then
-            path = vim.fn.fnamemodify(path, ":h")
-          end
-          require("snacks").picker.grep { cwd = path }
-        end, { buffer = bufnr, noremap = true, silent = true, desc = "Live grep in directory" })
+          -- press F to search in directory
+          vim.keymap.set("n", "F", function()
+            local node = api.tree.get_node_under_cursor()
+            if not node then
+              return
+            end
+            local path = node.absolute_path
+            -- If it's a file, use its parent directory
+            if node.type == "file" then
+              path = vim.fn.fnamemodify(path, ":h")
+            end
+            require("snacks").picker.grep { cwd = path }
+          end, { buffer = bufnr, noremap = true, silent = true, desc = "Live grep in directory" })
 
-        -- press zc to collapse the current folder (or parent if on a file)
-        vim.keymap.set("n", "zc", function()
-          local node = api.tree.get_node_under_cursor()
-          if not node then
-            return
-          end
-          if node.type == "file" or not node.open then
-            -- navigate to parent and close it
-            api.node.navigate.parent()
-            node = api.tree.get_node_under_cursor()
-          end
-          if node and node.open then
-            api.node.open.edit()
-          end
-        end, { buffer = bufnr, noremap = true, silent = true, desc = "Collapse current folder" })
+          -- press zc to collapse the current folder (or parent if on a file)
+          vim.keymap.set("n", "zc", function()
+            local node = api.tree.get_node_under_cursor()
+            if not node then
+              return
+            end
+            if node.type == "file" or not node.open then
+              -- navigate to parent and close it
+              api.node.navigate.parent()
+              node = api.tree.get_node_under_cursor()
+            end
+            if node and node.open then
+              api.node.open.edit()
+            end
+          end, { buffer = bufnr, noremap = true, silent = true, desc = "Collapse current folder" })
 
-        -- press zC to collapse all directories
-        vim.keymap.set(
-          "n",
-          "zC",
-          api.tree.collapse_all,
-          { buffer = bufnr, noremap = true, silent = true, desc = "Collapse all" }
-        )
+          -- press zC to collapse all directories
+          vim.keymap.set(
+            "n",
+            "zC",
+            api.tree.collapse_all,
+            { buffer = bufnr, noremap = true, silent = true, desc = "Collapse all" }
+          )
 
-        -- press gx to open file with system default application
-        vim.keymap.set("n", "gx", function()
-          local node = api.tree.get_node_under_cursor()
-          if node and node.absolute_path then
-            vim.fn.system { "open", node.absolute_path }
-          end
-        end, { buffer = bufnr, noremap = true, silent = true, desc = "Open with system app" })
-      end,
-    },
+          -- press gx to open file with system default application
+          vim.keymap.set("n", "gx", function()
+            local node = api.tree.get_node_under_cursor()
+            if node and node.absolute_path then
+              vim.fn.system { "open", node.absolute_path }
+            end
+          end, { buffer = bufnr, noremap = true, silent = true, desc = "Open with system app" })
+        end,
+      }
+    end,
   },
 
   {
