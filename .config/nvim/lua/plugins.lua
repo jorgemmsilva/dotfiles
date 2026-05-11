@@ -1207,22 +1207,6 @@ return {
           -- claude_skip_permissions = {
           --   cmd = { "claude", "--dangerously-skip-permissions" },
           -- },
-          opencode2 = {
-            cmd = { "opencode" },
-            is_proc = "\\<opencode\\>",
-          },
-          opencode3 = {
-            cmd = { "opencode" },
-            is_proc = "\\<opencode\\>",
-          },
-          opencode4 = {
-            cmd = { "opencode" },
-            is_proc = "\\<opencode\\>",
-          },
-          opencode5 = {
-            cmd = { "opencode" },
-            is_proc = "\\<opencode\\>",
-          },
         },
         win = {
           keys = {

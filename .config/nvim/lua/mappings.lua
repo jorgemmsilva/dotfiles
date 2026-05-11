@@ -407,13 +407,9 @@ map("n", "<esc>", function()
   vim.cmd.nohlsearch() -- also clear search highlight
 end)
 
--- replace occurances of the current word
-map(
-  "n",
-  "<leader>s",
-  [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
-  { desc = "replace all occurances current word" }
-)
+-- replace occurances of the current word / selection
+map("n", "<leader>s", 'viw"-y:%s/<C-r>-/<C-r>-/g<Left><Left>', { desc = "replace all occurances current word" })
+map("v", "<leader>s", '"-y:%s/<C-r>-/<C-r>-/g<Left><Left>', { desc = "replace all occurances current selection" })
 
 -- Toggle quickfix list
 map("n", "<leader>q", function()
