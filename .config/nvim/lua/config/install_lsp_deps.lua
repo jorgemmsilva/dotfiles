@@ -15,9 +15,21 @@ M.treesitter_parsers = {
   "html",
   "css",
   "javascript",
+  "tsx",
+  "jsdoc",
   "markdown",
   "bash",
   "solidity",
+  "markdown_inline",
+  "yaml",
+  "gitcommit",
+  "diff",
+  "regex",
+  "sql",
+  "python",
+  "xml",
+  "cmake",
+  "dockerfile",
 }
 
 M.mason_packages = {
