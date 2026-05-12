@@ -1214,7 +1214,10 @@ return {
             newline = {
               "<S-CR>",
               function(t)
-                t:send "\n"
+                local chan = vim.bo[t.buf].channel
+                if chan and chan > 0 then
+                  vim.api.nvim_chan_send(chan, "\n")
+                end
               end,
               mode = "t",
               desc = "insert newline",
