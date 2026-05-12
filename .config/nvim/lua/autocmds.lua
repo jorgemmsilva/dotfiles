@@ -77,14 +77,23 @@ autocmd("TermOpen", {
       local wininfo = vim.fn.getwininfo(vim.fn.win_getid())[1]
       local pty_width = wininfo.width - wininfo.textoff
 
-      -- vim.fn.line("v") = start of visual selection, vim.fn.line(".") = cursor
-      local v_start = vim.fn.line "v"
-      local v_end = vim.fn.line "."
-      if v_start > v_end then
-        v_start, v_end = v_end, v_start
+      -- Get visual selection bounds (line and column)
+      local v_start_line = vim.fn.line "v"
+      local v_start_col = vim.fn.col "v"
+      local v_end_line = vim.fn.line "."
+      local v_end_col = vim.fn.col "."
+      if v_start_line > v_end_line or (v_start_line == v_end_line and v_start_col > v_end_col) then
+        v_start_line, v_end_line = v_end_line, v_start_line
+        v_start_col, v_end_col = v_end_col, v_start_col
       end
 
-      local lines = vim.api.nvim_buf_get_lines(0, v_start - 1, v_end, false)
+      local lines = vim.api.nvim_buf_get_lines(0, v_start_line - 1, v_end_line, false)
+
+      -- Trim to character-wise selection boundaries
+      if #lines > 0 then
+        lines[#lines] = string.sub(lines[#lines], 1, v_end_col)
+        lines[1] = string.sub(lines[1], v_start_col)
+      end
 
       -- Walk lines: join any line whose length >= pty_width with the next (it's a continuation)
       local result = {}
