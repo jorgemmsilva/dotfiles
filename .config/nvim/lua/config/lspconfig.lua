@@ -4,7 +4,7 @@ local servers = {
   "gopls",
   "solidity_ls_nomicfoundation",
   "lua_ls",
-  "ts_ls",
+  "tsgo",
   "tailwindcss",
   "eslint",
   -- "copilot",
@@ -68,14 +68,19 @@ vim.lsp.config("lua_ls", { settings = lua_lsp_settings })
 ------------------------------------------------------------------
 --- TypeScript
 ------------------------------------------------------------------
-vim.lsp.config("ts_ls", {
-  init_options = {
-    maxTsServerMemory = 8192,
-    -- use fewer syntax/semantic workers for large monorepos
-    tsserver = {
-      useSyntaxServer = "auto",
-    },
-  },
+vim.lsp.config("tsgo", {
+  cmd = function(dispatchers, config)
+    local cmd = "tsgo"
+
+    if config and config.root_dir then
+      local local_cmd = vim.fs.joinpath(config.root_dir, "node_modules/.bin", cmd)
+      if vim.fn.executable(local_cmd) == 1 then
+        cmd = local_cmd
+      end
+    end
+
+    return vim.lsp.rpc.start({ cmd, "--lsp", "--stdio" }, dispatchers)
+  end,
 })
 
 ------------------------------------------------------------------
