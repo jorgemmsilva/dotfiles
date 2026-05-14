@@ -552,7 +552,15 @@ return {
       --
       -- See the fuzzy documentation for more information
       fuzzy = { implementation = "prefer_rust_with_warning" },
-      -- cmdline = { enabled = false },
+      cmdline = {
+        keymap = {
+          preset = "cmdline",
+          ["<Down>"] = { "select_next", "fallback" },
+          ["<Up>"] = { "select_prev", "fallback" },
+          ["<C-j>"] = { "select_next", "fallback" },
+          ["<C-k>"] = { "select_prev", "fallback" },
+        },
+      },
     },
     opts_extend = { "sources.default" },
     config = function(_, opts)
