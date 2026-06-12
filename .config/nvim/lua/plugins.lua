@@ -155,12 +155,10 @@ return {
 
   {
     "folke/which-key.nvim",
-    lazy = false,
-    keys = { "<leader>", "<c-w>", '"', "'", "`", "c", "v", "g" },
+    lazy = true,
+    event = "VeryLazy",
     cmd = "WhichKey",
-    opts = function()
-      return {}
-    end,
+    opts = {},
   },
 
   {

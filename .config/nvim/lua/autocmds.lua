@@ -51,7 +51,7 @@ end
 
 ToggleAutoRefresh() -- start with autorefresh enabled
 
-vim.keymap.set("n", "<leader>rr", ToggleAutoRefresh, {
+vim.keymap.set("n", "<leader>ar", ToggleAutoRefresh, {
   noremap = true,
   silent = false,
   desc = "Toggle auto refresh of files",

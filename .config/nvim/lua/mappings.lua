@@ -143,10 +143,19 @@ end, { silent = true, desc = "Show code actions" })
 --                          Picker integration (snacks.nvim)
 --------------------------------------------------------------------------------
 
+-- remove some default lsp keybinds, they are annoying with which key
+vim.keymap.del("n", "grr")
+vim.keymap.del("n", "gra")
+vim.keymap.del("n", "gri")
+vim.keymap.del("n", "grn")
+vim.keymap.del("n", "grt")
+vim.keymap.del("n", "grx")
+
 -- snacks picker lsp integration
 map("n", "gr", function()
   require("snacks").picker.lsp_references()
 end, { noremap = true, desc = "[G]oto [R]eferences" })
+
 map("n", "gi", function()
   require("snacks").picker.lsp_implementations()
 end, { noremap = true, desc = "[G]oto [I]mplementation" })
@@ -267,8 +276,8 @@ map("n", "<leader>y", '"+y', { desc = "copy to system clipboard" })
 map("v", "<leader>y", '"+y', { desc = "copy to system clipboard" })
 
 -- paste from the yank register
-map({ "n", "v", "x" }, "<leader>p", '"0p', { noremap = true, desc = "always paste from the yank register" })
-map({ "n", "v", "x" }, "<leader>P", '"0P', { noremap = true, desc = "always paste from the yank register" })
+map({ "n", "v", "x" }, "<leader>p", '"0p', { noremap = true, desc = "paste from the yank register" })
+map({ "n", "v", "x" }, "<leader>P", '"0P', { noremap = true, desc = "paste from the yank register" })
 
 --keep the contents of the _ register when pasting over a selection
 -- map("x", "<leader-p>", "_dP")
