@@ -77,14 +77,27 @@ autocmd("TermOpen", {
       local wininfo = vim.fn.getwininfo(vim.fn.win_getid())[1]
       local pty_width = wininfo.width - wininfo.textoff
 
-      -- vim.fn.line("v") = start of visual selection, vim.fn.line(".") = cursor
-      local v_start = vim.fn.line "v"
-      local v_end = vim.fn.line "."
-      if v_start > v_end then
-        v_start, v_end = v_end, v_start
+      -- Get visual selection bounds (line + column)
+      local start_pos = vim.fn.getpos "v"
+      local end_pos = vim.fn.getpos "."
+
+      local srow, scol = start_pos[2], start_pos[3]
+      local erow, ecol = end_pos[2], end_pos[3]
+
+      if srow > erow or (srow == erow and scol > ecol) then
+        srow, erow = erow, srow
+        scol, ecol = ecol, scol
       end
 
-      local lines = vim.api.nvim_buf_get_lines(0, v_start - 1, v_end, false)
+      local lines = vim.api.nvim_buf_get_lines(0, srow - 1, erow, false)
+
+      -- Trim first/last lines to the actual visual selection
+      if #lines == 1 then
+        lines[1] = string.sub(lines[1], scol, ecol)
+      else
+        lines[1] = string.sub(lines[1], scol)
+        lines[#lines] = string.sub(lines[#lines], 1, ecol)
+      end
 
       -- Walk lines: join any line whose length >= pty_width with the next (it's a continuation)
       local result = {}
@@ -102,10 +115,15 @@ autocmd("TermOpen", {
 
       local text = table.concat(result, "\n")
       vim.fn.setreg("+", text)
+
       -- Exit visual mode
       vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "nx", false)
+
       vim.notify("Yanked " .. #result .. " logical line(s) to clipboard", vim.log.levels.INFO)
-    end, { buffer = ev.buf, desc = "Smart yank: join wrapped terminal lines to system clipboard" })
+    end, {
+      buffer = ev.buf,
+      desc = "Smart yank: join wrapped terminal lines to system clipboard",
+    })
   end,
 })
 
