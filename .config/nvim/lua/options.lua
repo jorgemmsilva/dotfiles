@@ -1,6 +1,25 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- Per-project shada: keep jumplist/marks/registers from bleeding across
+-- separate nvim instances. Must run before shada is read (startup step 15);
+-- options.lua is required first in init.lua, so this is early enough.
+do
+  local cwd = vim.env.NV_HOST_DIR or vim.fn.getcwd()
+  if vim.env.NVIM_EPHEMERAL then
+    vim.o.shadafile = "NONE" -- match autosession's ephemeral behavior
+  elseif cwd ~= "/" and cwd ~= vim.fn.expand "~/Downloads" then
+    local enc = cwd:gsub("([/\\:*?\"'<>+ |%.%%])", function(c)
+      return string.format("%%%02X", string.byte(c))
+    end)
+    local dir = vim.fn.stdpath "state" .. "/shada"
+    if vim.fn.isdirectory(dir) == 0 then
+      vim.fn.mkdir(dir, "p")
+    end
+    vim.o.shadafile = dir .. "/proj-" .. enc .. ".shada"
+  end
+end
+
 vim.opt.relativenumber = true
 
 -- don't do backups, but let me keep undo's for days
