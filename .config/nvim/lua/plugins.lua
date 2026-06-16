@@ -62,6 +62,7 @@ return {
           enable = true,
           update_root = { enable = true },
         },
+        prefer_startup_root = true,
         actions = {
           open_file = {
             quit_on_open = true,
@@ -98,10 +99,18 @@ return {
           local api = require "nvim-tree.api"
 
           -- Default mappings
-          api.config.mappings.default_on_attach(bufnr)
+          api.map.on_attach.default(bufnr)
 
           -- Remove the - keymap
           vim.keymap.del("n", "-", { buffer = bufnr })
+
+          -- press <BS> to go up a directory (change root to parent)
+          vim.keymap.set(
+            "n",
+            "<BS>",
+            api.tree.change_root_to_parent,
+            { buffer = bufnr, noremap = true, silent = true, desc = "Up a directory" }
+          )
 
           -- press F to search in directory
           vim.keymap.set("n", "F", function()
