@@ -672,6 +672,10 @@ return {
     "esmuellert/codediff.nvim",
     dependencies = { "MunifTanjim/nui.nvim" },
     cmd = "CodeDiff",
+    keys = {
+      { "<leader>gfh", "<cmd>CodeDiff history % <cr>", desc = "File commit history (current file)" },
+      { "<leader>gh", "<cmd>CodeDiff history<cr>", desc = "Project commit history" },
+    },
   },
 
   {
@@ -1243,6 +1247,20 @@ return {
     },
     config = function(_, opts)
       require("sidekick").setup(opts)
+
+      -- gf inside a sidekick terminal opens the file in a picked window
+      -- (nvim-tree-style A/B/C overlay) instead of the sidekick buffer.
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "sidekick_terminal",
+        callback = function(ev)
+          vim.keymap.set("n", "gf", function()
+            require("custom.terminal").goto_file_under_cursor {
+              src_win = vim.api.nvim_get_current_win(),
+              hide_src = false,
+            }
+          end, { buffer = ev.buf, desc = "Sidekick: open file in picked window" })
+        end,
+      })
 
       -- Width-preserving toggle: saves split width before hiding, sets it on
       -- the terminal opts so open_win creates the window at the right size.
