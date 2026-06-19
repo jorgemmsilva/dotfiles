@@ -104,6 +104,12 @@ return {
           -- Remove the - keymap
           vim.keymap.del("n", "-", { buffer = bufnr })
 
+          -- macOS only: override c/x/p to integrate with the system clipboard
+          -- (Finder copy/paste). No-op on other platforms.
+          if vim.fn.has "mac" == 1 then
+            require("custom.macos_clipboard").setup_nvim_tree_keymaps(bufnr)
+          end
+
           -- press <BS> to go up a directory (change root to parent)
           vim.keymap.set(
             "n",
