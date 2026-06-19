@@ -959,7 +959,7 @@ return {
         -- refer to the configuration section below
         -- bigfile = { enabled = true },
         -- dashboard = { enabled = true },
-        explorer = { enabled = true },
+        -- explorer = { enabled = true },
         gitbrowse = {
           url_patterns = {
             ["gitlab%.cfdata%.org"] = {
@@ -1240,6 +1240,44 @@ return {
               end,
               mode = "t",
               desc = "insert newline",
+            },
+            -- forward <C-u>/<C-d> in normal mode as mouse-wheel scroll to the
+            -- agent's TUI (e.g. opencode, which uses native_scroll)
+            scroll_up = {
+              "<c-u>",
+              function(t)
+                local chan = vim.bo[t.buf].channel
+                if not (chan and chan > 0) then
+                  return
+                end
+                local valid = t.win and vim.api.nvim_win_is_valid(t.win)
+                local h = valid and vim.api.nvim_win_get_height(t.win) or 20
+                local w = valid and vim.api.nvim_win_get_width(t.win) or 80
+                local seq = ("\27[<64;%d;%dM"):format(math.floor(w / 2), math.floor(h / 2))
+                for _ = 1, 3 do
+                  vim.api.nvim_chan_send(chan, seq)
+                end
+              end,
+              mode = "n",
+              desc = "scroll agent up",
+            },
+            scroll_down = {
+              "<c-d>",
+              function(t)
+                local chan = vim.bo[t.buf].channel
+                if not (chan and chan > 0) then
+                  return
+                end
+                local valid = t.win and vim.api.nvim_win_is_valid(t.win)
+                local h = valid and vim.api.nvim_win_get_height(t.win) or 20
+                local w = valid and vim.api.nvim_win_get_width(t.win) or 80
+                local seq = ("\27[<65;%d;%dM"):format(math.floor(w / 2), math.floor(h / 2))
+                for _ = 1, 3 do
+                  vim.api.nvim_chan_send(chan, seq)
+                end
+              end,
+              mode = "n",
+              desc = "scroll agent down",
             },
           },
         },
