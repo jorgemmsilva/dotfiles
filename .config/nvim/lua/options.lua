@@ -112,7 +112,6 @@ vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,
 
 -- new nvim features
 --
-vim.cmd "packadd nvim.undotree"
 
 require("vim._core.ui2").enable {
   enable = true, -- Whether to enable or disable the UI.

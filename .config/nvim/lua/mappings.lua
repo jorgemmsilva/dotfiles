@@ -373,7 +373,7 @@ map("v", "<S-Tab>", "<gv")
 
 map("n", "<C-I>", "<C-I>") -- this is a fix for ctrl+i translating to the TAB keycode
 
-map("n", "<leader>u", "<cmd>Undotree<CR>")
+map("n", "<leader>u", "<cmd>packadd nvim.undotree | Undotree<CR>")
 
 map({ "n", "i" }, "<C-s>", "<Esc>:w<CR>", { desc = "save file" })
 map({ "n", "i" }, "<C-S-s>", "<Esc>:wa<CR>", { desc = "Save all buffers" })
