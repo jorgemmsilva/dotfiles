@@ -186,6 +186,7 @@ end, { noremap = true, silent = true, desc = "snacks find files" })
 map("n", "<C-f>", function()
   require("snacks").picker.grep {
     hidden = true,
+    cwd = vim.uv.cwd(),
   }
 end, { noremap = true, silent = true, desc = "snacks live grep" })
 
