@@ -66,6 +66,16 @@ return {
         actions = {
           open_file = {
             quit_on_open = true,
+            window_picker = {
+              enable = true,
+              -- Use our floating A/B/C overlay picker instead of the built-in
+              -- statusline-based one, which doesn't render with laststatus=3.
+              picker = function()
+                -- return -1 when no usable window so nvim-tree opens in the
+                -- default target window; nil (from cancel) aborts the open.
+                return require("custom.terminal").pick_window { empty_return = -1 }
+              end,
+            },
           },
         },
         view = {

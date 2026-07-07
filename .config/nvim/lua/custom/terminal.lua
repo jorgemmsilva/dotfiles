@@ -22,8 +22,9 @@ local function default_exclude(win)
 end
 
 -- Pick a target window with an nvim-tree-style A/B/C overlay.
--- opts.exclude(win) -> boolean to skip a window (defaults to default_exclude).
--- Returns a window id, or nil if cancelled / none available.
+-- opts.exclude(win)   -> boolean to skip a window (defaults to default_exclude).
+-- opts.empty_return   -> value returned when there are no candidates (default nil).
+-- Returns a window id, opts.empty_return if none available, or nil if cancelled.
 function M.pick_window(opts)
   opts = opts or {}
   local exclude = opts.exclude or default_exclude
@@ -36,7 +37,7 @@ function M.pick_window(opts)
   end
 
   if #candidates == 0 then
-    return nil
+    return opts.empty_return
   end
   if #candidates == 1 then
     return candidates[1]
