@@ -975,7 +975,7 @@ return {
     lazy = false,
     keys = {
       {
-        "<C-->",
+        "+",
         function()
           Snacks.picker.files()
         end,
@@ -1357,8 +1357,8 @@ return {
         require("sidekick.cli").toggle()
       end
 
-      vim.keymap.set({ "n", "t", "i", "x" }, "<c-a>", sidekick_toggle, { desc = "Sidekick Toggle" })
-      vim.keymap.set("n", "<leader>aa", sidekick_toggle, { desc = "Sidekick Toggle CLI" })
+      vim.keymap.set({ "n", "t", "i", "x" }, "<c-a>", sidekick_toggle, { desc = "Sidekick Toggle", noremap = true })
+      vim.keymap.set("n", "<leader>aa", sidekick_toggle, { desc = "Sidekick Toggle CLI", noremap = true })
     end,
     keys = {
       -- {

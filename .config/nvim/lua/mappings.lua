@@ -372,6 +372,10 @@ map("n", "<S-Tab>", "<<")
 map("v", "<Tab>", ">gv")
 map("v", "<S-Tab>", "<gv")
 
+-- increment / decrement with control +/-
+map({ "n", "v" }, "<C-->", "<C-x>")
+map({ "n", "v" }, "<C-S-=>", "<C-a>")
+
 map("n", "<C-I>", "<C-I>") -- this is a fix for ctrl+i translating to the TAB keycode
 
 map("n", "<leader>u", "<cmd>packadd nvim.undotree | Undotree<CR>")
