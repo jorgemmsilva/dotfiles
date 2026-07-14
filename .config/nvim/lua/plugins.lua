@@ -463,6 +463,17 @@ return {
     opts = {
       treesitter_diff_highlight = true,
     },
+    config = function(_, opts)
+      require("neogit").setup(opts)
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "Neogit*",
+        callback = function(ev)
+          vim.keymap.set("n", "<Esc>", function()
+            vim.cmd("bdelete " .. ev.buf)
+          end, { buffer = ev.buf, silent = true })
+        end,
+      })
+    end,
   },
 
   {
@@ -1357,6 +1368,7 @@ return {
         require("sidekick.cli").toggle()
       end
 
+      vim.keymap.set({ "n", "t", "i", "x" }, "<c- >", sidekick_toggle, { desc = "Sidekick Toggle", noremap = true })
       vim.keymap.set({ "n", "t", "i", "x" }, "<c-a>", sidekick_toggle, { desc = "Sidekick Toggle", noremap = true })
       vim.keymap.set("n", "<leader>aa", sidekick_toggle, { desc = "Sidekick Toggle CLI", noremap = true })
     end,
