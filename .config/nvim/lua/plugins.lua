@@ -1279,6 +1279,14 @@ return {
         win = {
           keys = {
             escape = { "<C-c>", "<c-[>", mode = "t" },
+            escape_normal = {
+              "<Esc>",
+              function()
+                require("sidekick.cli").toggle()
+              end,
+              mode = "n",
+              desc = "hide sidekick window",
+            },
             newline = {
               "<S-CR>",
               function(t)
