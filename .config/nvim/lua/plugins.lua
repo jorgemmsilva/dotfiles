@@ -655,6 +655,7 @@ return {
         function()
           require("smart-splits").move_cursor_left()
         end,
+        mode = { "n", "t" },
         desc = "Move to left split/pane",
       },
       {
@@ -662,6 +663,7 @@ return {
         function()
           require("smart-splits").move_cursor_down()
         end,
+        mode = { "n", "t" },
         desc = "Move to below split/pane",
       },
       {
@@ -669,6 +671,7 @@ return {
         function()
           require("smart-splits").move_cursor_up()
         end,
+        mode = { "n", "t" },
         desc = "Move to above split/pane",
       },
       {
@@ -676,6 +679,7 @@ return {
         function()
           require("smart-splits").move_cursor_right()
         end,
+        mode = { "n", "t" },
         desc = "Move to right split/pane",
       },
       {
@@ -1278,6 +1282,12 @@ return {
         },
         win = {
           keys = {
+            -- disable sidekick's default nav keymaps so the global
+            -- smart-splits ones (mode = { "n", "t" }) take over
+            nav_left = false,
+            nav_down = false,
+            nav_up = false,
+            nav_right = false,
             escape = { "<C-c>", "<c-[>", mode = "t" },
             escape_normal = {
               "<Esc>",
